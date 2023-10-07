@@ -1,6 +1,6 @@
 package guru.qa.rococo.data.repository;
 
-import guru.qa.niffler.data.UserEntity;
+import guru.qa.rococo.data.UserEntity;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,8 +1,8 @@
 package guru.qa.rococo.controller;
 
-import guru.qa.niffler.model.RegistrationModel;
-import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.UserService;
+import guru.qa.rococo.model.RegistrationModel;
+import guru.qa.rococo.model.UserJson;
+import guru.qa.rococo.service.UserService;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -36,20 +36,20 @@ public class RegisterController {
 
     private final KafkaTemplate<String, UserJson> kafkaTemplate;
 
-    private final String nifflerFrontUri;
+    private final String rococoFrontUri;
 
     @Autowired
     public RegisterController(UserService userService,
-                              KafkaTemplate<String, UserJson> kafkaTemplate, @Value("${niffler-front.base-uri}") String nifflerFrontUri) {
+                              KafkaTemplate<String, UserJson> kafkaTemplate, @Value("${niffler-front.base-uri}") String rococoFrontUri) {
         this.userService = userService;
         this.kafkaTemplate = kafkaTemplate;
-        this.nifflerFrontUri = nifflerFrontUri;
+        this.rococoFrontUri = rococoFrontUri;
     }
 
     @GetMapping("/register")
     public String getRegisterPage(Model model) {
         model.addAttribute(MODEL_REG_FORM_ATTR, new RegistrationModel());
-        model.addAttribute(MODEL_FRONT_URI_ATTR, nifflerFrontUri + "/redirect");
+        model.addAttribute(MODEL_FRONT_URI_ATTR, rococoFrontUri + "/redirect");
         return REGISTRATION_VIEW_NAME;
     }
 
@@ -84,7 +84,7 @@ public class RegisterController {
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-        model.addAttribute(MODEL_FRONT_URI_ATTR, nifflerFrontUri + "/redirect");
+        model.addAttribute(MODEL_FRONT_URI_ATTR, rococoFrontUri + "/redirect");
         return REGISTRATION_VIEW_NAME;
     }
 

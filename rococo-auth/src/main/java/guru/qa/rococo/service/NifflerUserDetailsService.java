@@ -1,8 +1,8 @@
 package guru.qa.rococo.service;
 
-import guru.qa.niffler.data.UserEntity;
-import guru.qa.niffler.data.repository.UserRepository;
-import guru.qa.niffler.domain.NifflerUserPrincipal;
+import guru.qa.rococo.data.UserEntity;
+import guru.qa.rococo.data.repository.UserRepository;
+import guru.qa.rococo.domain.RococoUserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,6 +25,6 @@ public class NifflerUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        return new NifflerUserPrincipal(user);
+        return new RococoUserPrincipal(user);
     }
 }

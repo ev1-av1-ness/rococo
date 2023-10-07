@@ -3,8 +3,8 @@ package guru.qa.rococo.config;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import guru.qa.niffler.config.keys.KeyManager;
-import guru.qa.niffler.service.cors.CorsCustomizer;
+import guru.qa.rococo.config.keys.KeyManager;
+import guru.qa.rococo.service.cors.CorsCustomizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -38,17 +38,17 @@ import java.util.UUID;
 public class RococoAuthServiceConfig {
 
     private final KeyManager keyManager;
-    private final String nifflerFrontUri;
-    private final String nifflerAuthUri;
+    private final String rococoFrontUri;
+    private final String rococoAuthUri;
     private final CorsCustomizer corsCustomizer;
 
     @Autowired
     public RococoAuthServiceConfig(KeyManager keyManager,
-                                   @Value("${niffler-front.base-uri}") String nifflerFrontUri,
-                                   @Value("${niffler-auth.base-uri}") String nifflerAuthUri, CorsCustomizer corsCustomizer) {
+                                   @Value("${rococo-front.base-uri}") String rococoFrontUri,
+                                   @Value("${rococo-auth.base-uri}") String rococoAuthUri, CorsCustomizer corsCustomizer) {
         this.keyManager = keyManager;
-        this.nifflerFrontUri = nifflerFrontUri;
-        this.nifflerAuthUri = nifflerAuthUri;
+        this.rococoFrontUri = rococoFrontUri;
+        this.rococoAuthUri = rococoAuthUri;
         this.corsCustomizer = corsCustomizer;
     }
 
@@ -76,7 +76,7 @@ public class RococoAuthServiceConfig {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri(nifflerFrontUri + "/authorized")
+                .redirectUri(rococoFrontUri + "/authorized")
                 .scope(OidcScopes.OPENID)
                 .clientSettings(ClientSettings.builder()
                         .requireAuthorizationConsent(true).build())
@@ -97,7 +97,7 @@ public class RococoAuthServiceConfig {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
-                .issuer(nifflerAuthUri)
+                .issuer(rococoAuthUri)
                 .build();
     }
 
