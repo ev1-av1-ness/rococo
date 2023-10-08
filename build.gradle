@@ -3,11 +3,26 @@ plugins {
 }
 
 group = 'guru.qa'
+version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 subprojects {
     repositories {
         mavenCentral()
+    }
+}
+
+subprojects {
+    ext {
+        dockerImage = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
+                ? "arm64v8/eclipse-temurin:19-jre"
+                : "eclipse-temurin:19-jre"
+        dockerArch =
+        registry =
+        oauth2AuthorizationServerVersion = '1.1.1'
+        jsr305Version = '3.0.2'
+        lombokVersion = '1.18.24'
+        mysqlDriverVersion = '8.0.33'
     }
 }
 

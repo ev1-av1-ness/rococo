@@ -6,4 +6,5 @@ include 'rococo-museum'
 include 'rococo-painting'
 include 'rococo-userdata'
 include 'rococo-gateway'
+include 'rococo-geo'
 

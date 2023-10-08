@@ -40,7 +40,7 @@ public class RegisterController {
 
     @Autowired
     public RegisterController(UserService userService,
-                              KafkaTemplate<String, UserJson> kafkaTemplate, @Value("${niffler-front.base-uri}") String rococoFrontUri) {
+                              KafkaTemplate<String, UserJson> kafkaTemplate, @Value("${rococo-front.base-uri}") String rococoFrontUri) {
         this.userService = userService;
         this.kafkaTemplate = kafkaTemplate;
         this.rococoFrontUri = rococoFrontUri;
