@@ -37,15 +37,10 @@ public class SecurityConfig {
         corsCustomizer.corsCustomizer(http);
 
         http
-                .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/register", "/images/**", "/styles/**", "/fonts/**", "/actuator/health")
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated()
-                )
                 .authorizeHttpRequests(customizer ->
                         customizer.requestMatchers(
                                 antMatcher(HttpMethod.GET, "/api/session"),
+                                antMatcher("/actuator/health"),
                                 antMatcher(HttpMethod.GET, "/api/artist/**"),
                                 antMatcher(HttpMethod.GET, "/api/museum/**"),
                                 antMatcher(HttpMethod.GET, "/api/painting/**"))
