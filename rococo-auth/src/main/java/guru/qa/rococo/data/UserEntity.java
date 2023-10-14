@@ -10,7 +10,7 @@ import java.util.UUID;
 import static jakarta.persistence.FetchType.EAGER;
 
 @Entity
-@Table(name = "users") //TODO: поправить на user
+@Table(name = "\"user\"")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

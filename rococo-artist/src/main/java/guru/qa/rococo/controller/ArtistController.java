@@ -1,4 +1,4 @@
-package quru.qa.rococo.controller;
+package guru.qa.rococo.controller;
 
 public class ArtistController {
 }

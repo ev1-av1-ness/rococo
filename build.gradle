@@ -17,8 +17,10 @@ subprojects {
         dockerImage = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
                 ? "arm64v8/eclipse-temurin:19-jre"
                 : "eclipse-temurin:19-jre"
-        dockerArch =
-        registry =
+        dockerArch = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
+                ? "arm64"
+                : "amd64"
+        registry = "ev1av1ness"
         oauth2AuthorizationServerVersion = '1.1.1'
         jsr305Version = '3.0.2'
         lombokVersion = '1.18.24'

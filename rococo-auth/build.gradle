@@ -25,7 +25,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-//TODO: фиксить dockerArch, dockerImage, registry, project.version,
 jib {
     container {
         ports = ['9000']

@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .authenticated()
                 )
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
+                //TODO: ниже начинается неуверенность
                 .csrf((csrf) -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         // https://stackoverflow.com/a/74521360/65681
