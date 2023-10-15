@@ -1,6 +1,7 @@
 package guru.qa.rococo.model;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class ArtistJson {
 
     @JsonProperty("id")
-    private String id;
+    private UUID id;
     @JsonProperty("name")
     private String name;
     @JsonProperty("biography")
@@ -38,7 +39,7 @@ public class ArtistJson {
      * @param id
      * @param biography
      */
-    public ArtistJson(String id, String name, String biography, String photo) {
+    public ArtistJson(UUID id, String name, String biography, String photo) { //TODO: может быть не нужен, удалить
         super();
         this.id = id;
         this.name = name;
@@ -47,12 +48,12 @@ public class ArtistJson {
     }
 
     @JsonProperty("id")
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
     @JsonProperty("id")
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

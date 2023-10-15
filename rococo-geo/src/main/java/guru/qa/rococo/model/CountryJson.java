@@ -1,6 +1,7 @@
 package guru.qa.rococo.model;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class CountryJson {
 
     @JsonProperty("id")
-    private String id;
+    private UUID id;
     @JsonProperty("name")
     private String name;
 
@@ -30,19 +31,19 @@ public class CountryJson {
      * @param name
      * @param id
      */
-    public CountryJson(String id, String name) {
+    public CountryJson(UUID id, String name) {
         super();
         this.id = id;
         this.name = name;
     }
 
     @JsonProperty("id")
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
     @JsonProperty("id")
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
