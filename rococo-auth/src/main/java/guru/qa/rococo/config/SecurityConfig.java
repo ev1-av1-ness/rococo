@@ -5,12 +5,9 @@ import guru.qa.rococo.service.cors.CorsCustomizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -18,11 +15,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
-
-@EnableWebSecurity
 @Configuration
-@Profile("!local")
 public class SecurityConfig {
 
     private final CorsCustomizer corsCustomizer;
@@ -36,20 +29,12 @@ public class SecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         corsCustomizer.corsCustomizer(http);
 
-        http
-                .authorizeHttpRequests(customizer ->
-                        customizer.requestMatchers(
-                                antMatcher(HttpMethod.GET, "/api/session"),
-                                antMatcher("/actuator/health"),
-                                antMatcher(HttpMethod.GET, "/api/artist/**"),
-                                antMatcher(HttpMethod.GET, "/api/museum/**"),
-                                antMatcher(HttpMethod.GET, "/api/painting/**"))
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated()
+        http.authorizeHttpRequests(authorize ->
+                        authorize.requestMatchers("/register", "/images/**", "/styles/**", "/fonts/**", "/actuator/health")
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated()
                 )
-                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
-                //TODO: ниже начинается неуверенность
                 .csrf((csrf) -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         // https://stackoverflow.com/a/74521360/65681

@@ -1,0 +1,66 @@
+server:
+  port: 8090
+  error:
+    include:
+      message: true
+
+spring:
+  application:
+    name: rococo-gateway
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+#    org.springframework.boot.autoconfigure: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'local'
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: 'http://127.0.0.1:9000'
+
+rococo-artist:
+  base-uri: 'http://127.0.0.1:8091'
+rococo-userdata:
+  base-uri: 'http://127.0.0.1:8089'
+rococo-geo:
+  base-uri: 'http://127.0.0.1:8093'
+rococo-museum:
+  base-uri: 'http://127.0.0.1:8093' #TODO: поменять порт!!
+rococo-painting:
+  base-uri: 'http://127.0.0.1:8093' #TODO: поменять порт!!
+rococo-front:
+  base-uri: 'http://127.0.0.1:3000'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'docker'
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: 'http://auth.rococo.dc:9000'
+
+rococo-artist:
+  base-uri: 'http:/artist.rococo.docker:8091' #TODO: проверить порты!!
+rococo-userdata:
+  base-uri: 'http://userdata.rococo.docker:8089'
+rococo-geo:
+  base-uri: 'http://geo.rococo.docker:8093'
+rococo-museum:
+  base-uri: 'http://museum.rococo.docker:8093'
+rococo-painting:
+  base-uri: 'http://painting.rococo.docker:8093' #TODO: поменять порт!!
+rococo-front:
+  base-uri: 'http://frontend.rococo.docker'
+---

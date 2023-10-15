@@ -1,19 +1,59 @@
 plugins {
     id 'java'
+    id 'org.springframework.boot' version '3.1.0'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'com.palantir.docker' version '0.35.0'
 }
 
-group = 'guru.qa'
-version = 'unspecified'
+group 'guru.qa'
+version '0.0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
 
+
+//sourceSets { //TODO: маловероятно что нужно
+//    main {
+//        java {
+//            srcDir 'src/main/java'
+//        }
+//    }
+//}
+
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.9.1')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation('org.springframework.boot:spring-boot-starter-web-services') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework:spring-webflux"
+    implementation "io.projectreactor.netty:reactor-netty"
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-test {
+docker {
+    dependsOn build
+    name "ev1av1ness/rococo-gateway:${project.version}"
+    tag 'latest', 'ev1av1ness/niffler-gateway:latest'
+    files bootJar.archiveFile
+    buildArgs([APP_VER: project.version, DOCKER: project.ext.dockerImage])
+    noCache true
+}
+
+tasks.register('dockerRmi', Exec) {
+    workingDir "${buildDir}"
+    commandLine 'bash', '-c', "docker rmi -f \$(docker images | grep 'rococo')\n"
+}
+
+//tasks.named('bootJar') { //TODO: маловероятно что нужно
+//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//}
+
+tasks.named('test') {
     useJUnitPlatform()
 }
