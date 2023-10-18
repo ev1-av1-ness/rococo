@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import guru.qa.rococo.data.ArtistEntity;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -106,5 +107,11 @@ public class ArtistJson {
             return false;
         }
         return (Objects.equals(this.name, rhs.name) && Objects.equals(this.photo, rhs.photo) && Objects.equals(this.id, rhs.id) && Objects.equals(this.biography, rhs.biography));
+    }
+
+    public static ArtistJson fromEntity(ArtistEntity entity) {
+        ArtistJson artist = new ArtistJson();
+//        artist.setId(entity.getId());
+        return artist;
     }
 }
