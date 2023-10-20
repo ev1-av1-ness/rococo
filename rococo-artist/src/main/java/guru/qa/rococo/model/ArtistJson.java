@@ -1,5 +1,6 @@
 package guru.qa.rococo.model;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -26,26 +27,8 @@ public class ArtistJson {
     @JsonProperty("photo")
     private String photo;
 
-    /**
-     * No args constructor for use in serialization
-     *
-     */
-    public ArtistJson() {
-    }
 
-    /**
-     *
-     * @param name
-     * @param photo
-     * @param id
-     * @param biography
-     */
-    public ArtistJson(UUID id, String name, String biography, String photo) { //TODO: может быть не нужен, удалить
-        super();
-        this.id = id;
-        this.name = name;
-        this.biography = biography;
-        this.photo = photo;
+    public ArtistJson() {
     }
 
     @JsonProperty("id")
@@ -88,30 +71,25 @@ public class ArtistJson {
         this.photo = photo;
     }
 
-    @Override
-    public int hashCode() { //TODO: поправить функцию
-        int result = 1;
-        result = ((result* 31)+((this.name == null)? 0 :this.name.hashCode()));
-        result = ((result* 31)+((this.photo == null)? 0 :this.photo.hashCode()));
-        result = ((result* 31)+((this.id == null)? 0 :this.id.hashCode()));
-        result = ((result* 31)+((this.biography == null)? 0 :this.biography.hashCode()));
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if (!(other instanceof ArtistJson rhs)) {
-            return false;
-        }
-        return (Objects.equals(this.name, rhs.name) && Objects.equals(this.photo, rhs.photo) && Objects.equals(this.id, rhs.id) && Objects.equals(this.biography, rhs.biography));
-    }
-
     public static ArtistJson fromEntity(ArtistEntity entity) {
         ArtistJson artist = new ArtistJson();
-//        artist.setId(entity.getId());
+        byte[] photo = entity.getPhoto();
+        artist.setId(entity.getId());
+        artist.setName(entity.getName());
+        artist.setBiography(entity.getBiography());
+        artist.setPhoto(photo != null && photo.length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null);
         return artist;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ArtistJson that)) return false;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(biography, that.biography) && Objects.equals(photo, that.photo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, biography, photo);
     }
 }

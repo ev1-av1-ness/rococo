@@ -1,13 +1,19 @@
 package guru.qa.rococo.model;
 
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import guru.qa.rococo.data.ArtistEntity;
+import guru.qa.rococo.data.PaintingEntity;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -21,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class PaintingJson {
 
     @JsonProperty("id")
-    private String id;
+    private UUID id;
     @JsonProperty("title")
     private String title;
     @JsonProperty("description")
@@ -32,47 +38,17 @@ public class PaintingJson {
     private MuseumJson museum;
     @JsonProperty("artist")
     private ArtistJson artist;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new LinkedHashMap<>();
 
-    /**
-     * No args constructor for use in serialization
-     *
-     */
     public PaintingJson() {
     }
 
-    /**
-     *
-     * @param museum
-     * @param artist
-     * @param description
-     * @param id
-     * @param title
-     * @param content
-     */
-    public PaintingJson(String id,
-                        String title,
-                        String description,
-                        String content,
-                        MuseumJson museum,
-                        ArtistJson artist) {
-        super();
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.content = content;
-        this.museum = museum;
-        this.artist = artist;
-    }
-
     @JsonProperty("id")
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
     @JsonProperty("id")
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -126,37 +102,27 @@ public class PaintingJson {
         this.artist = artist;
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+    public static PaintingJson fromEntity(PaintingEntity entity) {
+        PaintingJson painting = new PaintingJson();
+        byte[] photo = entity.getContent();
+        painting.setId(entity.getId());
+        painting.setTitle(entity.getTitle());
+        painting.setDescription(entity.getDescription());
+        painting.setContent(photo != null && photo.length > 0 ? new String(entity.getContent(), StandardCharsets.UTF_8) : null);
+//        painting.setMuseum(entity.getMuseum()); //TODO: fix
+//        painting.setArtist(entity.getArtist());
+        return painting;
     }
 
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PaintingJson that)) return false;
+        return Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(description, that.description) && Objects.equals(content, that.content) && Objects.equals(museum, that.museum) && Objects.equals(artist, that.artist);
     }
 
     @Override
     public int hashCode() {
-        int result = 1;
-        result = ((result* 31)+((this.museum == null)? 0 :this.museum.hashCode()));
-        result = ((result* 31)+((this.artist == null)? 0 :this.artist.hashCode()));
-        result = ((result* 31)+((this.description == null)? 0 :this.description.hashCode()));
-        result = ((result* 31)+((this.id == null)? 0 :this.id.hashCode()));
-        result = ((result* 31)+((this.additionalProperties == null)? 0 :this.additionalProperties.hashCode()));
-        result = ((result* 31)+((this.title == null)? 0 :this.title.hashCode()));
-        result = ((result* 31)+((this.content == null)? 0 :this.content.hashCode()));
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if (!(other instanceof PaintingJson rhs)) {
-            return false;
-        }
-        return ((((((((this.museum == rhs.museum)||((this.museum!= null)&&this.museum.equals(rhs.museum)))&&((this.artist == rhs.artist)||((this.artist!= null)&&this.artist.equals(rhs.artist))))&&((this.description == rhs.description)||((this.description!= null)&&this.description.equals(rhs.description))))&&((this.id == rhs.id)||((this.id!= null)&&this.id.equals(rhs.id))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))))&&((this.title == rhs.title)||((this.title!= null)&&this.title.equals(rhs.title))))&&((this.content == rhs.content)||((this.content!= null)&&this.content.equals(rhs.content))));
+        return Objects.hash(id, title, description, content, museum, artist);
     }
 }

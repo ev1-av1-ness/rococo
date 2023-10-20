@@ -1,16 +1,13 @@
 package guru.qa.rococo.model;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import guru.qa.rococo.data.MuseumEntity;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -33,28 +30,8 @@ public class MuseumJson {
     @JsonProperty("geo")
     private GeoJson geo;
 
-    /**
-     * No args constructor for use in serialization
-     *
-     */
-    public MuseumJson() {
-    }
 
-    /**
-     *
-     * @param geo
-     * @param description
-     * @param photo
-     * @param id
-     * @param title
-     */
-    public MuseumJson(UUID id, String title, String description, String photo, GeoJson geo) {
-        super();
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.photo = photo;
-        this.geo = geo;
+    public MuseumJson() {
     }
 
     @JsonProperty("id")
@@ -117,5 +94,16 @@ public class MuseumJson {
     @Override
     public int hashCode() {
         return Objects.hash(id, title, description, photo, geo);
+    }
+
+    public static MuseumJson fromEntity(MuseumEntity entity) {
+        MuseumJson museum = new MuseumJson();
+        byte[] photo = entity.getPhoto();
+        museum.setId(entity.getId());
+        museum.setTitle(entity.getTitle());
+        museum.setDescription(entity.getDescription());
+//        museum.setGeo(entity.getGeo()); //TODO: fix
+        museum.setPhoto(photo != null && photo.length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null);
+        return museum;
     }
 }

@@ -6,33 +6,40 @@ import guru.qa.rococo.ex.NotFoundException;
 import guru.qa.rococo.model.ArtistJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @Component
 public class ArtistService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ArtistService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ArtistService.class); //TODO: доп обработка
 
     private final ArtistRepository artistRepository;
 
-    @Autowired
     public ArtistService(ArtistRepository artistRepository) {
         this.artistRepository = artistRepository;
     }
 
-    @NonNull public ArtistEntity getArtistById(String id) {
+    public Page<ArtistJson> getArtists(Pageable pageable) {
+        Page<ArtistEntity> artistEntities = artistRepository.findAll(pageable);
+        return artistEntities.map(ArtistJson::fromEntity);
+    }
 
-        ArtistEntity artist = new ArtistEntity(); //TODO: реализовать
+    public ArtistEntity getArtistById(String id) {
+        return artistRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new NotFoundException("Artist not found with id: " + id));
+    }
 
-        if (artist == null) {
-            throw new NotFoundException("Artist not found"); //TODO: добавить работу с экстеншенами
-        }
-
-        return artist;
+    public ArtistEntity createArtist(@NonNull ArtistJson artistJson) {
+        ArtistEntity artistEntity = new ArtistEntity();
+        artistEntity.setName(artistJson.getName());
+        artistEntity.setBiography(artistJson.getBiography());
+        artistEntity.setPhoto(artistJson.getPhoto() != null ? artistJson.getPhoto().getBytes(StandardCharsets.UTF_8) : null);
+        return artistRepository.save(artistEntity);
     }
 }
