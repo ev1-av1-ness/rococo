@@ -1,8 +1,6 @@
 package guru.qa.rococo.controller;
 
-import guru.qa.rococo.data.MuseumEntity;
 import guru.qa.rococo.data.PaintingEntity;
-import guru.qa.rococo.model.MuseumJson;
 import guru.qa.rococo.model.PaintingJson;
 import guru.qa.rococo.service.PaintingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/painting")
@@ -23,25 +23,27 @@ public class PaintingController {
         this.paintingService = paintingService;
     }
 
-    @GetMapping()
-    public ResponseEntity<Page<PaintingJson>> getPaintings(
+    @GetMapping
+    public Page<PaintingJson> getPaintings(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "9") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<PaintingJson> paintings = paintingService.getPaintings(pageable);
-        return ResponseEntity.ok(paintings);
+        return paintingService.getPaintings(pageable);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PaintingEntity> getPaintingById(@PathVariable String id) {
-        PaintingEntity painting = paintingService.getPaintingById(id);
-        return ResponseEntity.ok(painting);
+    public PaintingJson getPaintingById(@PathVariable String id) {
+        return paintingService.getPaintingById(id);
     }
 
-    @PostMapping()
-    public ResponseEntity<PaintingEntity> createPainting(@RequestBody PaintingJson paintingJson) {
-        PaintingEntity painting = paintingService.createPainting(paintingJson);
-        return ResponseEntity.status(HttpStatus.CREATED).body(painting);
+    @GetMapping
+    public List<PaintingJson> getPaintingsByTitle(@RequestParam String title) {
+        return paintingService.getPaintingsByTitle(title); //TODO: статус код и ошибка обработчик
+    }
+
+    @PostMapping
+    public PaintingJson createPainting(@RequestBody PaintingJson paintingJson) {
+        return paintingService.createPainting(paintingJson);
     }
 }

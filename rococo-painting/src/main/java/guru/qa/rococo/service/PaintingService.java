@@ -12,7 +12,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class PaintingService {
@@ -30,12 +32,26 @@ public class PaintingService {
         return artistEntities.map(PaintingJson::fromEntity);
     }
 
-    public PaintingEntity getPaintingById(String id) {
+    public PaintingJson getPaintingById(String id) {
         return paintingRepository.findById(UUID.fromString(id))
+                .map(PaintingJson::fromEntity)
                 .orElseThrow(() -> new NotFoundException("Painting not found with id: " + id));
     }
 
-    public PaintingEntity createPainting(@NonNull PaintingJson paintingJson) {
+    public List<PaintingJson> getPaintingsByTitle(String title) {
+//        return paintingRepository.findByTitleContaining(title);
+
+
+        List<PaintingEntity> entity = paintingRepository.findByTitleContaining(title);
+        if (entity.isEmpty()) {
+            throw new NotFoundException("Painting not found with id: " + title);
+        }
+        return entity.stream()
+                .map(PaintingJson::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    public PaintingJson createPainting(@NonNull PaintingJson paintingJson) {
         PaintingEntity paintingEntity = new PaintingEntity();
         paintingEntity.setTitle(paintingJson.getTitle());
         paintingEntity.setDescription(paintingJson.getDescription());
@@ -51,7 +67,8 @@ public class PaintingService {
         paintingEntity.setMuseum(museum);
         paintingEntity.setArtist(artist);
 
-        return paintingRepository.save(paintingEntity);
+        PaintingEntity saved = paintingRepository.save(paintingEntity);
+        return PaintingJson.fromEntity(saved);
     }
 
     private static MuseumEntity getMuseumEntity(PaintingJson paintingJson) {
