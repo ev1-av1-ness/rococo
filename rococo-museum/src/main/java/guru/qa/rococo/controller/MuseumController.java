@@ -33,6 +33,9 @@ public class MuseumController {
         return ResponseEntity.ok(artists);
     }
 
+    //patch museum
+    //get search by title
+
     @GetMapping("/{id}")
     public ResponseEntity<MuseumEntity> getMuseumById(@PathVariable String id) {
         MuseumEntity museum = museumService.getMuseumById(id);

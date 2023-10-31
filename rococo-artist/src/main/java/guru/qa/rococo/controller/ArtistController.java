@@ -29,6 +29,9 @@ public class ArtistController {
         return ResponseEntity.ok(artists);
     }
 
+    //patch artist
+    //get search by title
+
     @GetMapping("/{id}")
     public ResponseEntity<ArtistEntity> getArtistById(@PathVariable String id) {
         ArtistEntity artist = artistService.getArtistById(id);

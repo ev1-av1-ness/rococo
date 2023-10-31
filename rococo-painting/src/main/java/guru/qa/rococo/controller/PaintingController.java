@@ -1,17 +1,13 @@
 package guru.qa.rococo.controller;
 
-import guru.qa.rococo.data.PaintingEntity;
 import guru.qa.rococo.model.PaintingJson;
 import guru.qa.rococo.service.PaintingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/painting")
@@ -32,18 +28,24 @@ public class PaintingController {
         return paintingService.getPaintings(pageable);
     }
 
+    @PatchMapping
+    public PaintingJson changePainting(@RequestBody PaintingJson painting) {
+        return paintingService.changePainting(painting);
+    }
+
     @GetMapping("/{id}")
     public PaintingJson getPaintingById(@PathVariable String id) {
         return paintingService.getPaintingById(id);
     }
 
     @GetMapping
-    public List<PaintingJson> getPaintingsByTitle(@RequestParam String title) {
-        return paintingService.getPaintingsByTitle(title); //TODO: статус код и ошибка обработчик
+    public Page<PaintingJson> getPaintingsByTitle(@RequestParam(required = false) String title,
+                                                  @PageableDefault Pageable pageable) {
+        return paintingService.getPaintingsByTitle(title, pageable); //TODO: статус код и ошибка обработчик
     }
 
     @PostMapping
-    public PaintingJson createPainting(@RequestBody PaintingJson paintingJson) {
-        return paintingService.createPainting(paintingJson);
+    public PaintingJson createPainting(@RequestBody PaintingJson painting) {
+        return paintingService.createPainting(painting);
     }
 }

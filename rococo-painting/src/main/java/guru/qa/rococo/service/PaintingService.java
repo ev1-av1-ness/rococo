@@ -8,13 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 public class PaintingService {
@@ -27,31 +28,30 @@ public class PaintingService {
         this.paintingRepository = paintingRepository;
     }
 
-    public Page<PaintingJson> getPaintings(Pageable pageable) {
+    public @NonNull
+    Page<PaintingJson> getPaintings(Pageable pageable) {
         Page<PaintingEntity> artistEntities = paintingRepository.findAll(pageable);
         return artistEntities.map(PaintingJson::fromEntity);
     }
 
-    public PaintingJson getPaintingById(String id) {
+    public @NonNull
+    PaintingJson getPaintingById(String id) {
         return paintingRepository.findById(UUID.fromString(id))
                 .map(PaintingJson::fromEntity)
                 .orElseThrow(() -> new NotFoundException("Painting not found with id: " + id));
     }
 
-    public List<PaintingJson> getPaintingsByTitle(String title) {
-//        return paintingRepository.findByTitleContaining(title);
-
-
-        List<PaintingEntity> entity = paintingRepository.findByTitleContaining(title);
-        if (entity.isEmpty()) {
-            throw new NotFoundException("Painting not found with id: " + title);
+    public @NonNull
+    Page<PaintingJson> getPaintingsByTitle(String title, Pageable pageable) {
+        Page<PaintingEntity> entities = paintingRepository.findAllByTitleContainsIgnoreCase(title, pageable);
+        if (entities.isEmpty()) {
+            throw new NotFoundException("Painting not found with title: " + title);
         }
-        return entity.stream()
-                .map(PaintingJson::fromEntity)
-                .collect(Collectors.toList());
+        return entities.map(PaintingJson::fromEntity);
     }
 
-    public PaintingJson createPainting(@NonNull PaintingJson paintingJson) {
+    public @NonNull
+    PaintingJson createPainting(@NonNull PaintingJson paintingJson) {
         PaintingEntity paintingEntity = new PaintingEntity();
         paintingEntity.setTitle(paintingJson.getTitle());
         paintingEntity.setDescription(paintingJson.getDescription());
@@ -85,5 +85,28 @@ public class PaintingService {
         museum.setPhoto(paintingJson.getMuseum().getPhoto() != null ? paintingJson.getMuseum().getPhoto().getBytes(StandardCharsets.UTF_8) : null);
         museum.setGeo(geoMuseumEntity);
         return museum;
+    }
+
+    public @NonNull
+    PaintingJson changePainting(@NonNull PaintingJson painting) {
+        Optional<PaintingEntity> paintingById = paintingRepository.findById(painting.getId());
+        if (paintingById.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can`t find painting by given id: " + painting.getId());
+        } else {
+            PaintingEntity paintingEntity = paintingById.get();
+            paintingEntity.setTitle(painting.getTitle());
+            paintingEntity.setContent(painting.getContent() != null ? painting.getContent().getBytes(StandardCharsets.UTF_8) : null);
+            paintingEntity.setDescription(painting.getDescription());
+
+            ArtistEntity artist = new ArtistEntity();
+            artist.setName(painting.getArtist().getName());
+            artist.setBiography(painting.getArtist().getBiography());
+            artist.setPhoto(painting.getArtist().getPhoto() != null ? painting.getArtist().getPhoto().getBytes(StandardCharsets.UTF_8) : null);
+
+            paintingEntity.setMuseum(getMuseumEntity(painting));
+            paintingEntity.setArtist(artist);
+
+            return PaintingJson.fromEntity(paintingRepository.save(paintingEntity));
+        }
     }
 }
