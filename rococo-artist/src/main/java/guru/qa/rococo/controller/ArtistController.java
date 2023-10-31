@@ -1,13 +1,11 @@
 package guru.qa.rococo.controller;
 
-import guru.qa.rococo.data.ArtistEntity;
 import guru.qa.rococo.model.ArtistJson;
 import guru.qa.rococo.service.ArtistService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,33 +13,30 @@ import org.springframework.web.bind.annotation.*;
 public class ArtistController {
     private final ArtistService artistService;
 
+    @Autowired
     public ArtistController(ArtistService artistService) {
         this.artistService = artistService;
     }
 
     @GetMapping()
-    public ResponseEntity<Page<ArtistJson>> getArtists(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "18") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ArtistJson> artists = artistService.getArtists(pageable);
-        return ResponseEntity.ok(artists);
+    public Page<ArtistJson> getAll(@RequestParam(required = false) String name,
+                                   @PageableDefault Pageable pageable) {
+        return artistService.getAll(name, pageable);
     }
 
-    //patch artist
-    //get search by title
+    @PatchMapping()
+    public ArtistJson updateArtist(@RequestBody ArtistJson artist) {
+        return artistService.updateArtist(artist);
+    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ArtistEntity> getArtistById(@PathVariable String id) {
-        ArtistEntity artist = artistService.getArtistById(id);
-        return ResponseEntity.ok(artist);
+    public ArtistJson findArtistById(@PathVariable("id") String id) {
+        return artistService.findArtistById(id);
     }
 
     @PostMapping()
-    public ResponseEntity<ArtistEntity> createArtist(@RequestBody ArtistJson artistJson) {
-        ArtistEntity createdArtist = artistService.createArtist(artistJson);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdArtist);
+    public ArtistJson addArtist(@RequestBody ArtistJson artist) {
+        return artistService.addArtist(artist);
     }
 
 }

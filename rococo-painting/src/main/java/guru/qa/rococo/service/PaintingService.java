@@ -4,13 +4,16 @@ import guru.qa.rococo.data.*;
 import guru.qa.rococo.data.repository.PaintingRepository;
 import guru.qa.rococo.ex.NotFoundException;
 import guru.qa.rococo.model.PaintingJson;
+import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
@@ -24,34 +27,29 @@ public class PaintingService {
 
     private final PaintingRepository paintingRepository;
 
+    @Autowired
     public PaintingService(PaintingRepository paintingRepository) {
         this.paintingRepository = paintingRepository;
     }
 
-    public @NonNull
-    Page<PaintingJson> getPaintings(Pageable pageable) {
-        Page<PaintingEntity> artistEntities = paintingRepository.findAll(pageable);
-        return artistEntities.map(PaintingJson::fromEntity);
+    @Transactional(readOnly = true)
+    public @Nonnull Page<PaintingJson> getAll(@Nullable String name, @Nonnull Pageable pageable) {
+        Page<PaintingEntity> paintingEntities = (name == null)
+                ? paintingRepository.findAll(pageable)
+                : paintingRepository.findAllByNameContainsIgnoreCase(name, pageable);
+        return paintingEntities.map(PaintingJson::fromEntity);
     }
 
-    public @NonNull
-    PaintingJson getPaintingById(String id) {
-        return paintingRepository.findById(UUID.fromString(id))
-                .map(PaintingJson::fromEntity)
-                .orElseThrow(() -> new NotFoundException("Painting not found with id: " + id));
+    @Transactional(readOnly = true)
+    public @Nonnull PaintingJson findPaintingById(@Nonnull String id) {
+        return PaintingJson.fromEntity(
+                paintingRepository.findById(UUID.fromString(id))
+                        .orElseThrow(() -> new NotFoundException("Artist not found with id: " + id)
+                        )
+        );
     }
 
-    public @NonNull
-    Page<PaintingJson> getPaintingsByTitle(String title, Pageable pageable) {
-        Page<PaintingEntity> entities = paintingRepository.findAllByTitleContainsIgnoreCase(title, pageable);
-        if (entities.isEmpty()) {
-            throw new NotFoundException("Painting not found with title: " + title);
-        }
-        return entities.map(PaintingJson::fromEntity);
-    }
-
-    public @NonNull
-    PaintingJson createPainting(@NonNull PaintingJson paintingJson) {
+    public @Nonnull PaintingJson createPainting(@Nonnull PaintingJson paintingJson) {
         PaintingEntity paintingEntity = new PaintingEntity();
         paintingEntity.setTitle(paintingJson.getTitle());
         paintingEntity.setDescription(paintingJson.getDescription());
@@ -71,27 +69,26 @@ public class PaintingService {
         return PaintingJson.fromEntity(saved);
     }
 
-    private static MuseumEntity getMuseumEntity(PaintingJson paintingJson) {
+    private static MuseumEntity getMuseumEntity(@Nonnull PaintingJson painting) {
         CountryEntity countryMuseumEntity = new CountryEntity();
-        countryMuseumEntity.setName(paintingJson.getMuseum().getGeo().getCountry().getName());
+        countryMuseumEntity.setName(painting.getMuseum().getGeo().getCountry().getName());
 
         GeoEntity geoMuseumEntity = new GeoEntity();
-        geoMuseumEntity.setCity(paintingJson.getMuseum().getGeo().getCity());
+        geoMuseumEntity.setCity(painting.getMuseum().getGeo().getCity());
         geoMuseumEntity.setCountry(countryMuseumEntity);
 
         MuseumEntity museum = new MuseumEntity();
-        museum.setTitle(paintingJson.getTitle());
-        museum.setDescription(paintingJson.getDescription());
-        museum.setPhoto(paintingJson.getMuseum().getPhoto() != null ? paintingJson.getMuseum().getPhoto().getBytes(StandardCharsets.UTF_8) : null);
+        museum.setTitle(painting.getTitle());
+        museum.setDescription(painting.getDescription());
+        museum.setPhoto(painting.getMuseum().getPhoto() != null ? painting.getMuseum().getPhoto().getBytes(StandardCharsets.UTF_8) : null);
         museum.setGeo(geoMuseumEntity);
         return museum;
     }
 
-    public @NonNull
-    PaintingJson changePainting(@NonNull PaintingJson painting) {
+    public @Nonnull PaintingJson changePainting(@Nonnull PaintingJson painting) {
         Optional<PaintingEntity> paintingById = paintingRepository.findById(painting.getId());
         if (paintingById.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can`t find painting by given id: " + painting.getId());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Painting not found with id: " + painting.getId());
         } else {
             PaintingEntity paintingEntity = paintingById.get();
             paintingEntity.setTitle(painting.getTitle());

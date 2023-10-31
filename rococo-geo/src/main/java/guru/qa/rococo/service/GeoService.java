@@ -3,28 +3,25 @@ package guru.qa.rococo.service;
 import guru.qa.rococo.data.CountryEntity;
 import guru.qa.rococo.data.repository.GeoRepository;
 import guru.qa.rococo.model.CountryJson;
+import jakarta.annotation.Nonnull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class GeoService {
     private final GeoRepository geoRepository;
 
+    @Autowired
     public GeoService(GeoRepository geoRepository) {
         this.geoRepository = geoRepository;
     }
 
-    public List<CountryJson> getCountries(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<CountryEntity> countryPage = geoRepository.findAll(pageable);
-        return countryPage
-                .stream()
-                .map(CountryJson::fromEntity)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public @Nonnull Page<CountryJson> getAll(@Nonnull Pageable pageable) {
+        Page<CountryEntity> museumEntities = geoRepository.findAll(pageable);
+        return museumEntities.map(CountryJson::fromEntity);
     }
 }

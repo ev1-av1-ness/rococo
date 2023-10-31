@@ -20,32 +20,24 @@ public class PaintingController {
     }
 
     @GetMapping
-    public Page<PaintingJson> getPaintings(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "9") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        return paintingService.getPaintings(pageable);
+    public Page<PaintingJson> getAll(@RequestParam(required = false) String name,
+                                     @PageableDefault Pageable pageable) {
+        return paintingService.getAll(name, pageable); //TODO: статус код и ошибка обработчик
     }
 
     @PatchMapping
-    public PaintingJson changePainting(@RequestBody PaintingJson painting) {
+    public PaintingJson updatePainting(@RequestBody PaintingJson painting) {
         return paintingService.changePainting(painting);
     }
 
     @GetMapping("/{id}")
-    public PaintingJson getPaintingById(@PathVariable String id) {
-        return paintingService.getPaintingById(id);
+    public PaintingJson findPaintingById(@PathVariable("id") String id) {
+        return paintingService.findPaintingById(id);
     }
 
-    @GetMapping
-    public Page<PaintingJson> getPaintingsByTitle(@RequestParam(required = false) String title,
-                                                  @PageableDefault Pageable pageable) {
-        return paintingService.getPaintingsByTitle(title, pageable); //TODO: статус код и ошибка обработчик
-    }
 
     @PostMapping
-    public PaintingJson createPainting(@RequestBody PaintingJson painting) {
+    public PaintingJson addPainting(@RequestBody PaintingJson painting) {
         return paintingService.createPainting(painting);
     }
 }

@@ -6,14 +6,20 @@ import guru.qa.rococo.data.MuseumEntity;
 import guru.qa.rococo.data.repository.MuseumRepository;
 import guru.qa.rococo.ex.NotFoundException;
 import guru.qa.rococo.model.MuseumJson;
+import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.lang.NonNull;
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -23,34 +29,69 @@ public class MuseumService {
 
     private final MuseumRepository museumRepository;
 
+    @Autowired
     public MuseumService(MuseumRepository museumRepository) {
         this.museumRepository = museumRepository;
     }
 
-    public Page<MuseumJson> getMuseums(Pageable pageable) {
-        Page<MuseumEntity> artistEntities = museumRepository.findAll(pageable);
-        return artistEntities.map(MuseumJson::fromEntity);
+    @Transactional(readOnly = true)
+    public @Nonnull Page<MuseumJson> getAll(@Nullable String name, @Nonnull Pageable pageable) {
+        Page<MuseumEntity> museumEntities = (name == null)
+                ? museumRepository.findAll(pageable)
+                : museumRepository.findAllByNameContainsIgnoreCase(name, pageable);
+        return museumEntities.map(MuseumJson::fromEntity);
     }
 
-    public MuseumEntity getMuseumById(String id) {
-        return museumRepository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new NotFoundException("Museum not found with id: " + id));
+    @Transactional(readOnly = true)
+    public @Nonnull MuseumJson findMuseumById(@Nonnull String id) {
+        return MuseumJson.fromEntity(
+                museumRepository.findById(UUID.fromString(id))
+                        .orElseThrow(() -> new NotFoundException("Artist not found with id: " + id)
+                        )
+        );
     }
 
-    public MuseumEntity createMuseum(@NonNull MuseumJson museumJson) {
+    @Transactional
+    public @Nonnull MuseumJson addMuseum(@Nonnull MuseumJson museum) {
         MuseumEntity museumEntity = new MuseumEntity();
-        museumEntity.setTitle(museumJson.getTitle());
-        museumEntity.setDescription(museumJson.getDescription());
-        museumEntity.setPhoto(museumJson.getPhoto() != null ? museumJson.getPhoto().getBytes(StandardCharsets.UTF_8) : null);
+        museumEntity.setTitle(museum.getTitle());
+        museumEntity.setDescription(museum.getDescription());
+        museumEntity.setPhoto(museum.getPhoto() != null ? museum.getPhoto().getBytes(StandardCharsets.UTF_8) : null);
 
         CountryEntity country = new CountryEntity();
-        country.setName(museumJson.getGeo().getCountry().getName());
+        country.setName(museum.getGeo().getCountry().getName());
 
         GeoEntity geo = new GeoEntity();
-        geo.setCity(museumJson.getGeo().getCity());
+        geo.setCity(museum.getGeo().getCity());
         geo.setCountry(country);
 
         museumEntity.setGeo(geo);
-        return museumRepository.save(museumEntity);
+
+        MuseumEntity saved = museumRepository.save(museumEntity);
+        return MuseumJson.fromEntity(saved);
+    }
+
+    @Transactional
+    public @Nonnull MuseumJson updateMuseum(@Nonnull MuseumJson museum) {
+        Optional<MuseumEntity> museumById = museumRepository.findById(museum.getId());
+        if (museumById.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Artist not found with id: " + museum.getId());
+        } else {
+            MuseumEntity museumEntity = museumById.get();
+            museumEntity.setTitle(museum.getTitle());
+            museumEntity.setDescription(museum.getDescription());
+            museumEntity.setPhoto(museum.getPhoto() != null ? museum.getPhoto().getBytes(StandardCharsets.UTF_8) : null);
+
+            CountryEntity country = new CountryEntity();
+            country.setName(museum.getGeo().getCountry().getName());
+
+            GeoEntity geo = new GeoEntity();
+            geo.setCity(museum.getGeo().getCity());
+            geo.setCountry(country);
+
+            museumEntity.setGeo(geo);
+
+            return MuseumJson.fromEntity(museumRepository.save(museumEntity));
+        }
     }
 }

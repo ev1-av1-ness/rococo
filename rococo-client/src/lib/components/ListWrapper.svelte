@@ -21,29 +21,33 @@
 </script>
 
 {#if !data?.length}
-    {#if isSearchNotEmpty}
-        <EmptySearch
-                text={emptySearchText}
-                description={emptySearchDescription}
-        />
+    {#if isLoading}
+        <Loader/>
     {:else}
-        <EmptyState
-                text={emptyStateTitle}
-                buttonName={emptyStateButtonName}
-                onButtonClick={clickAddButton}
-                {bordered}
-                {fullPage}
-        />
+        {#if isSearchNotEmpty}
+            <EmptySearch
+                    text={emptySearchText}
+                    description={emptySearchDescription}
+            />
+        {:else}
+            <EmptyState
+                    text={emptyStateTitle}
+                    buttonName={emptyStateButtonName}
+                    onButtonClick={clickAddButton}
+                    {bordered}
+                    {fullPage}
+            />
+        {/if}
     {/if}
 {:else}
     <div class="w-100">
         <slot/>
-        {#if !noMoreData}
-            <div use:viewport on:viewportenter={() => loadMore()}>
-                {#if isLoading}
-                    <Loader/>
-                {/if}
-            </div>
+    </div>
+{/if}
+{#if !noMoreData}
+    <div use:viewport on:viewportenter={() => loadMore()}>
+        {#if isLoading}
+            <Loader/>
         {/if}
     </div>
 {/if}

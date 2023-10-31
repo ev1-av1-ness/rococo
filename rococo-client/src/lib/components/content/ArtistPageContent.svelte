@@ -3,38 +3,61 @@
     import NewPaintingForm from '$lib/components/forms/painting/NewPaintingForm.svelte';
     import { prepareModal } from '$lib/helpers/prepareModal';
     import {singleArtistStore} from "$lib/stores/singleArtist.store";
-    import {apiClient} from "$lib/helpers/apiClient";
+    import {apiClient} from "$lib/api/apiClient";
     import {checkDuplicates} from "$lib/helpers/dataUtils";
     import type {PaintingType} from "$lib/types/Painting";
     import ListWrapper from "$lib/components/ListWrapper.svelte";
     import PaintingList from "$lib/components/PaintingList.svelte";
     import EditArtistForm from "$lib/components/forms/artist/EditArtistForm.svelte";
-    import type {PageData} from "../../../../.svelte-kit/types/src/routes/artist/[id]/$types.js";
+    import { page } from '$app/stores';
     import {sessionStore} from "$lib/stores/sessionStore";
     import EditComponent from "$lib/components/EditComponent.svelte";
+    import {onMount} from "svelte";
+    import {goto} from "$app/navigation";
 
     const modalStore = getModalStore();
-
-    export let data: PageData;
 
     export let errorTrigger: (message: string) => void;
     export let successTrigger: (message: string) => void;
 
-
     let currentPage = 0;
+    const authorId = $page.params.id;
 
-    if(data.artist.error || data.paintings.error) {
-        errorTrigger(data.artist.error ?? data.paintings.error);
-    }
-    if(data.artist.data && data.paintings.data) {
+    onMount(async () => {
         singleArtistStore.set({
-            data: data.artist.data,
-            paintings: data.paintings.data.content,
-            noMoreData: currentPage === data.paintings.data.totalPages - 1,
-            isLoading: false,
+            data: undefined,
+            paintings: [],
+            noMoreData: true,
+            isLoading: true,
             ignoreIds: [],
         });
-    }
+        const artistData = await apiClient.loadArtist(authorId);
+        const paintingsData = await apiClient.loadPaintingsByAuthorId({authorId: $page.params.id});
+        if(artistData.error || paintingsData.error) {
+            errorTrigger(artistData.error ?? paintingsData.error);
+            singleArtistStore.update(() => {
+                return {
+                    noMoreData: true,
+                    data: artistData?.data,
+                    paintings: paintingsData?.data?.content,
+                    isLoading: false,
+                    ignoreIds: [],
+                }
+            });
+            await goto("/not-found");
+        }
+        if(artistData.data && paintingsData.data) {
+            singleArtistStore.update(() => {
+                return {
+                    data: artistData.data,
+                    paintings: paintingsData.data?.content,
+                    noMoreData: paintingsData.data ? currentPage === paintingsData.data?.totalPages - 1: true,
+                    isLoading: false,
+                    ignoreIds: [],
+                }
+            });
+        }
+    });
 
     const loadMore = async () => {
         singleArtistStore.update((prevState) => {
@@ -44,7 +67,7 @@
                 noMoreData: true,
             }
         });
-        const response = await apiClient.loadPaintingsByAuthorId({authorId: data.artist.data.id, page: ++currentPage});
+        const response = await apiClient.loadPaintingsByAuthorId({authorId: authorId, page: ++currentPage});
         if (response.error) {
             singleArtistStore.update((prevState) => {
                 return {
@@ -65,7 +88,7 @@
                         ...prevState.paintings,
                         ...newBatch
                     ],
-                    noMoreData: currentPage === resData.totalPages -1,
+                    noMoreData: resData.data ? currentPage === resData.data?.totalPages - 1: true,
                     isLoading: false,
                 }
             });
@@ -124,17 +147,18 @@
                         store={singleArtistStore}
                         dataKey="name"
                         successMessage="Обновлен художник"
+                        dataTestId="edit-artist"
                         formData={{
                            name: $singleArtistStore?.data?.name,
                            photo: $singleArtistStore?.data?.photo,
                            biography: $singleArtistStore?.data?.biography,
-                           id: data.artist.data.id,
+                           id: authorId,
                         }}
                 />
                 <button class="btn variant-filled-primary m-3 mx-auto block w-full" type="button" on:click={clickAddButton}>Добавить картину</button>
             {/if}
         </div>
-        <p class="col-span-2 w-4/5">{$singleArtistStore?.data?.biography}</p>
+        <p class="col-span-2 w-4/5 m-2">{$singleArtistStore?.data?.biography}</p>
     </section>
     <section class="p-4">
         <ListWrapper data={$singleArtistStore.paintings}

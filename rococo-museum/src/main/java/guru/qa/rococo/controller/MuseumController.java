@@ -24,27 +24,25 @@ public class MuseumController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<MuseumJson>> getMuseums(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "4") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<MuseumJson> artists = museumService.getMuseums(pageable);
-        return ResponseEntity.ok(artists);
+    public Page<MuseumJson> getAll(@RequestParam(required = false) String name,
+                                   @PageableDefault Pageable pageable) {
+        return museumService.getAll(name, pageable);
     }
 
-    //patch museum
-    //get search by title
-
     @GetMapping("/{id}")
-    public ResponseEntity<MuseumEntity> getMuseumById(@PathVariable String id) {
-        MuseumEntity museum = museumService.getMuseumById(id);
-        return ResponseEntity.ok(museum);
+    public MuseumJson findMuseumById(@PathVariable("id") String id) {
+        return museumService.findMuseumById(id);
     }
 
     @PostMapping()
-    public ResponseEntity<MuseumEntity> createMuseum(@RequestBody MuseumJson museumJson) {
-        MuseumEntity museum = museumService.createMuseum(museumJson);
-        return ResponseEntity.status(HttpStatus.CREATED).body(museum);
+    public MuseumJson addArtist(@RequestBody MuseumJson museum) {
+        return museumService.addMuseum(museum);
     }
+
+
+    @PatchMapping()
+    public MuseumJson updateMuseum(@RequestBody MuseumJson museum) {
+        return museumService.updateMuseum(museum);
+    }
+
 }

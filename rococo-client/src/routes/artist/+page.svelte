@@ -1,18 +1,14 @@
 <script lang="ts">
-    import type { PageData } from './$types';
     import ToastHandler from "$lib/components/ToastHandler.svelte";
     import {artistsStore} from "$lib/stores/artist.store";
-    import {apiClient} from "$lib/helpers/apiClient";
+    import {apiClient} from "$lib/api/apiClient";
     import NewArtistForm from "$lib/components/forms/artist/NewArtistForm.svelte";
     import CommonPage from "$lib/components/content/CommonPage.svelte";
     import ArtistList from "$lib/components/ArtistList.svelte";
 
-    export let data: PageData;
-
 </script>
 <ToastHandler let:triggerError let:triggerSuccess>
     <CommonPage
-            {data}
             errorTrigger={triggerError}
             successTrigger={triggerSuccess}
             store={artistsStore}
