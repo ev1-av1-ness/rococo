@@ -1,9 +1,7 @@
 package guru.qa.rococo.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import guru.qa.rococo.data.UserEntity;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -71,17 +69,6 @@ public class UserJson {
     @JsonProperty("avatar")
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }
-
-    public static UserJson fromEntity(UserEntity entity) {
-        UserJson usr = new UserJson();
-        byte[] photo = entity.getAvatar();
-        usr.setId(entity.getId());
-        usr.setUsername(entity.getUsername());
-        usr.setFirstname(entity.getFirstName());
-        usr.setLastname(entity.getLastName());
-        usr.setAvatar(photo != null && photo.length > 0 ? new String(entity.getAvatar(), StandardCharsets.UTF_8) : null);
-        return usr;
     }
 
     @Override

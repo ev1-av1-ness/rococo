@@ -15,7 +15,6 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 
 @EnableWebSecurity
 @Configuration
-@Profile("!local")
 public class SecurityConfigMain {
 
     private final CorsCustomizer corsCustomizer;

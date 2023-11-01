@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/user")
 public class UserController {
     private final UserDataService userDataService;
 
@@ -15,12 +16,12 @@ public class UserController {
         this.userDataService = userDataService;
     }
 
-    @PatchMapping("/api/user")
+    @PatchMapping()
     public UserJson updateUserInfo(@RequestBody UserJson user) {
         return userDataService.update(user);
     }
 
-    @GetMapping("/api/user")
+    @GetMapping()
     public UserJson currentUser(@RequestParam String username) {
         return userDataService.getCurrentUser(username);
     }

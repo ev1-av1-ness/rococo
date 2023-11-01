@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class RococoGatewayServiceConfig {
     public static final int THREE_MB = 3145728;
 
-    private final String rococoUserdataBaseUri; //TODO: подумать как использовать и надо ли вообще
+    private final String rococoUserdataBaseUri;
 
     @Autowired
     public RococoGatewayServiceConfig(@Value("${rococo-userdata.base-uri}") String rococoUserdataBaseUri) {

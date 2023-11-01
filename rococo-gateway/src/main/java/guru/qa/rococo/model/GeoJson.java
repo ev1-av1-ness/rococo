@@ -1,16 +1,11 @@
 package guru.qa.rococo.model;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "city",
-        "country"
-})
+import java.util.Objects;
+
 public class GeoJson {
 
     @JsonProperty("city")

@@ -22,7 +22,7 @@ public class PaintingController {
     @GetMapping
     public Page<PaintingJson> getAll(@RequestParam(required = false) String name,
                                      @PageableDefault Pageable pageable) {
-        return paintingService.getAll(name, pageable); //TODO: статус код и ошибка обработчик
+        return paintingService.getAll(name, pageable);
     }
 
     @PatchMapping
@@ -34,7 +34,6 @@ public class PaintingController {
     public PaintingJson findPaintingById(@PathVariable("id") String id) {
         return paintingService.findPaintingById(id);
     }
-
 
     @PostMapping
     public PaintingJson addPainting(@RequestBody PaintingJson painting) {
