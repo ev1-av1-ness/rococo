@@ -49,6 +49,14 @@ public class PaintingService {
         );
     }
 
+    //TODO:
+    //pageable
+//    @Transactional(readOnly = true)
+//    public @Nonnull Page<PaintingJson> findPaintingByAuthorId(@Nonnull String id, @Nonnull Pageable pageable) {
+//        Page<PaintingEntity> paintingEntities = paintingRepository.findAllByNameContainsIgnoreCase(id, pageable);
+//        return paintingEntities.map(PaintingJson::fromEntity);
+//    }
+
     public @Nonnull PaintingJson createPainting(@Nonnull PaintingJson paintingJson) {
         PaintingEntity paintingEntity = new PaintingEntity();
         paintingEntity.setTitle(paintingJson.getTitle());
