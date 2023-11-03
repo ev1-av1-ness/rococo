@@ -8,7 +8,8 @@ import java.util.UUID;
 @Table(name = "geo")
 public class GeoEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "UUID")
+    @Column(name = "id", columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID(), TRUE))")
     private UUID id;
 
     @Column(name = "city")

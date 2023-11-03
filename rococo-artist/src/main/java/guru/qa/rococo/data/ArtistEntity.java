@@ -8,8 +8,8 @@ import java.util.UUID;
 @Table(name = "artist")
 public class ArtistEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
+    @GeneratedValue(generator = "UUID")
+    @Column(name = "id", columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID(), TRUE))")
     private UUID id;
 
     @Column(name = "name")
