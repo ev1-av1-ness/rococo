@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3.9' #TODO: поправить весь файл!!!!
 
 services:
   rococo-db:
@@ -6,7 +6,7 @@ services:
     image: mysql:8.0.34
     environment:
       - MYSQL_USER=root
-      - MYSQL_PASSWORD=secret
+      - MYSQL_PASSWORD=secretdb
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       interval: 3s
@@ -15,7 +15,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - rococo:/var/lib/mysql  #/data?
+      - rococo:/var/lib/mysql
     restart: always
     networks:
       - rococo-network
@@ -50,8 +50,8 @@ services:
     networks:
       - rococo-network
 
-  auth.rococo.docker:
-    container_name: auth.rococo.docker
+  auth.rococo.dc:
+    container_name: auth.rococo.dc
     image: ev1av1ness/rococo-auth:latest
     ports:
       - "9000:9000"
@@ -70,8 +70,8 @@ services:
       - rococo-network
     dns_search: .
 
-  gateway.rococo.docker:
-    container_name: gateway.rococo.docker
+  gateway.rococo.dc:
+    container_name: gateway.rococo.dc
     image: ev1av1ness/rococo-gateway:latest
     ports:
       - "8090:8090"
@@ -88,14 +88,14 @@ services:
       - rococo-network
     dns_search: .
 
-  ui.rococo.docker:
-    container_name: ui.rococo.docker
+  client.rococo.dc:
+    container_name: client.rococo.dc
     image: "${FRONT_IMAGE}"
     ports:
       - "80:80"
     restart: always
     depends_on:
-      gateway.rococo.docker:
+      gateway.rococo.dc:
         condition: service_healthy
     networks:
       - rococo-network

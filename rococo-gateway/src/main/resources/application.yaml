@@ -28,16 +28,16 @@ spring:
           issuer-uri: 'http://127.0.0.1:9000'
 
 rococo-artist:
-  base-uri: 'http://127.0.0.1:8091'
+  base-uri: 'http://127.0.0.1:9002'
 rococo-userdata:
   base-uri: 'http://127.0.0.1:8089'
 rococo-geo:
-  base-uri: 'http://127.0.0.1:8093'
+  base-uri: 'http://127.0.0.1:8091'
 rococo-museum:
-  base-uri: 'http://127.0.0.1:8093' #TODO: поменять порт!!
+  base-uri: 'http://127.0.0.1:9004'
 rococo-painting:
-  base-uri: 'http://127.0.0.1:8093' #TODO: поменять порт!!
-rococo-front:
+  base-uri: 'http://127.0.0.1:9006'
+rococo-client:
   base-uri: 'http://127.0.0.1:3000'
 
 ---
@@ -52,15 +52,15 @@ spring:
           issuer-uri: 'http://auth.rococo.dc:9000'
 
 rococo-artist:
-  base-uri: 'http:/artist.rococo.docker:8091' #TODO: проверить порты!!
+  base-uri: 'http://artist.rococo.dc:9002'
 rococo-userdata:
-  base-uri: 'http://userdata.rococo.docker:8089'
+  base-uri: 'http://userdata.rococo.dc:8089'
 rococo-geo:
-  base-uri: 'http://geo.rococo.docker:8093'
+  base-uri: 'http://geo.rococo.dc:8091'
 rococo-museum:
-  base-uri: 'http://museum.rococo.docker:8093'
+  base-uri: 'http://museum.rococo.dc:9004'
 rococo-painting:
-  base-uri: 'http://painting.rococo.docker:8093' #TODO: поменять порт!!
-rococo-front:
-  base-uri: 'http://frontend.rococo.docker'
+  base-uri: 'http://painting.rococo.dc:9006'
+rococo-client:
+  base-uri: 'http://client.rococo.dc'
 ---

@@ -16,7 +16,7 @@ public class CorsCustomizer {
     private final String rococoFrontUri;
 
     @Autowired
-    public CorsCustomizer(@Value("${rococo-front.base-uri}") String rococoFrontUri) {
+    public CorsCustomizer(@Value("${rococo-client.base-uri}") String rococoFrontUri) {
         this.rococoFrontUri = rococoFrontUri;
     }
 
