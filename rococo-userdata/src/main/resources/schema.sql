@@ -1,4 +1,4 @@
-create table if not exists 'user'
+create table if not exists `user`
 (
     id                    binary(16)   unique not null default (UUID_TO_BIN(UUID(), true)),
     username              varchar(255) unique not null,
