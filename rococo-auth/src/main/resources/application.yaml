@@ -63,9 +63,9 @@ spring:
     hibernate:
       ddl-auto: validate
 rococo-client:
-  uri: http://127.0.0.1:3000
+  base-uri: http://127.0.0.1:3000
 rococo-auth:
-  uri: http://127.0.0.1:9000
+  base-uri: http://127.0.0.1:9000
 ---
 spring:
   config:
@@ -79,7 +79,7 @@ spring:
     hibernate:
       ddl-auto: validate
 rococo-client:
-  uri: http://client.rococo.dc
+  base-uri: http://client.rococo.dc
 rococo-auth:
-  uri: http://auth.rococo.dc:9000
+  base-uri: http://auth.rococo.dc:9000
 ---
