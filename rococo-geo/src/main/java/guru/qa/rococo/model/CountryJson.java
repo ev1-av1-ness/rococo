@@ -1,20 +1,11 @@
 package guru.qa.rococo.model;
 
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import guru.qa.rococo.data.CountryEntity;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "id",
-        "name"
-})
 public class CountryJson {
 
     @JsonProperty("id")
@@ -46,22 +37,15 @@ public class CountryJson {
     }
 
     @Override
-    public int hashCode() {
-        int result = 1;
-        result = ((result* 31)+((this.name == null)? 0 :this.name.hashCode()));
-        result = ((result* 31)+((this.id == null)? 0 :this.id.hashCode()));
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CountryJson that)) return false;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if (!(other instanceof CountryJson rhs)) {
-            return false;
-        }
-        return Objects.equals(this.name, rhs.name) && Objects.equals(this.id, rhs.id);
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 
     public static CountryJson fromEntity(CountryEntity content) {

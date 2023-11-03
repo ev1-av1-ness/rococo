@@ -1,29 +1,12 @@
 package guru.qa.rococo.model;
 
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import guru.qa.rococo.data.ArtistEntity;
 import guru.qa.rococo.data.PaintingEntity;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "id",
-        "title",
-        "description",
-        "content",
-        "museum",
-        "artist"
-})
 public class PaintingJson {
 
     @JsonProperty("id")
@@ -109,8 +92,8 @@ public class PaintingJson {
         painting.setTitle(entity.getTitle());
         painting.setDescription(entity.getDescription());
         painting.setContent(photo != null && photo.length > 0 ? new String(entity.getContent(), StandardCharsets.UTF_8) : null);
-//        painting.setMuseum(entity.getMuseum()); //TODO: fix
-//        painting.setArtist(entity.getArtist());
+        painting.setMuseum(MuseumJson.fromEntity(entity.getMuseum()));
+        painting.setArtist(ArtistJson.fromEntity(entity.getArtist()));
         return painting;
     }
 

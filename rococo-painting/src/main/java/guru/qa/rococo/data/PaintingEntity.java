@@ -76,5 +76,4 @@ public class PaintingEntity {
         this.content = content;
     }
 
-    // getters and setters
 }

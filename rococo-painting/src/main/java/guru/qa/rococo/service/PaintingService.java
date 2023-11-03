@@ -36,7 +36,7 @@ public class PaintingService {
     public @Nonnull Page<PaintingJson> getAll(@Nullable String name, @Nonnull Pageable pageable) {
         Page<PaintingEntity> paintingEntities = (name == null)
                 ? paintingRepository.findAll(pageable)
-                : paintingRepository.findAllByNameContainsIgnoreCase(name, pageable);
+                : paintingRepository.findAllByTitleContainsIgnoreCase(name, pageable);
         return paintingEntities.map(PaintingJson::fromEntity);
     }
 
@@ -49,13 +49,11 @@ public class PaintingService {
         );
     }
 
-    //TODO:
-    //pageable
-//    @Transactional(readOnly = true)
-//    public @Nonnull Page<PaintingJson> findPaintingByAuthorId(@Nonnull String id, @Nonnull Pageable pageable) {
-//        Page<PaintingEntity> paintingEntities = paintingRepository.findAllByNameContainsIgnoreCase(id, pageable);
-//        return paintingEntities.map(PaintingJson::fromEntity);
-//    }
+    @Transactional(readOnly = true)
+    public @Nonnull Page<PaintingJson> findPaintingByAuthorId(@Nonnull String artistId, @Nonnull Pageable pageable) {
+        Page<PaintingEntity> paintingEntities = paintingRepository.findByArtistId(UUID.fromString(artistId), pageable);
+        return paintingEntities.map(PaintingJson::fromEntity);
+    }
 
     public @Nonnull PaintingJson createPainting(@Nonnull PaintingJson paintingJson) {
         PaintingEntity paintingEntity = new PaintingEntity();

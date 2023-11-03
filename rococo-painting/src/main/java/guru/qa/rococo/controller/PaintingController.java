@@ -30,17 +30,11 @@ public class PaintingController {
         return paintingService.changePainting(painting);
     }
 
-    //TODO:
-    //pageable
-//    http://127.0.0.1:8080/api/painting/author/5a486b2f-c361-459e-bd3f-60692a635ea9?size=9&page=0
-//    Request Method:
-//    GET
-//    @GetMapping("/author/{id}")
-//    public Page<PaintingJson> findPaintingByAuthorId(@PathVariable("id") String id,
-//                                     @PageableDefault Pageable pageable) {
-//        return paintingService.findPaintingByAuthorId(id, pageable);
-//    }
-
+    @GetMapping("/author/{artistId}")
+    public Page<PaintingJson> findPaintingByAuthorId(@PathVariable("artistId") String artistId,
+                                     @PageableDefault Pageable pageable) {
+        return paintingService.findPaintingByAuthorId(artistId, pageable);
+    }
 
     @GetMapping("/{id}")
     public PaintingJson findPaintingById(@PathVariable("id") String id) {

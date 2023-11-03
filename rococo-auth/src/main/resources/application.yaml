@@ -81,5 +81,5 @@ spring:
 rococo-ui:
   uri: http://ui.rococo.docker
 rococo-auth:
-  uri: http://auth.rococo.docker #:9000
+  uri: http://auth.rococo.docker
 ---

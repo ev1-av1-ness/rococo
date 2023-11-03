@@ -85,4 +85,22 @@ public class PaintingClient {
         int end = Math.min((start + pageable.getPageSize()), paintingList.size());
         return new PageImpl<>(paintingList.subList(start, end), pageable, paintingList.size());
     }
+
+
+    public @Nonnull
+    Page<PaintingJson> findPaintingByAuthorId(@Nonnull String artistId, @Nonnull Pageable pageable) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("size", String.valueOf(pageable.getPageSize()));
+        params.add("page", String.valueOf(pageable.getPageNumber()));
+        URI uri = UriComponentsBuilder.fromHttpUrl(rococoPaintingBaseUri + "/api/painting/author").path("/{artistId}")
+                .queryParams(params)
+                .buildAndExpand(artistId).toUri();
+
+        return webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToFlux(PaintingJson.class)
+                .collectList()
+                .map(paintingList -> createPage(paintingList, pageable)).block();
+    }
 }

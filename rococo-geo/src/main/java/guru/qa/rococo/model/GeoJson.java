@@ -1,18 +1,12 @@
 package guru.qa.rococo.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import guru.qa.rococo.data.GeoEntity;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "city",
-        "country"
-})
 public class GeoJson {
-
     @JsonProperty("city")
     private String city;
     @JsonProperty("country")
@@ -41,22 +35,22 @@ public class GeoJson {
         this.countryJson = country;
     }
 
-    @Override
-    public int hashCode() {
-        int result = 1;
-        result = ((result* 31)+((this.countryJson == null)? 0 :this.countryJson.hashCode()));
-        result = ((result* 31)+((this.city == null)? 0 :this.city.hashCode()));
-        return result;
+    public static GeoJson fromEntity(GeoEntity entity) {
+        GeoJson geo = new GeoJson();
+        geo.setCity(entity.getCity());
+        geo.setCountry(CountryJson.fromEntity(entity.getCountry()));
+        return geo;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if (!(other instanceof GeoJson rhs)) {
-            return false;
-        }
-        return (Objects.equals(this.countryJson, rhs.countryJson) &&(Objects.equals(this.city, rhs.city)));
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GeoJson geoJson)) return false;
+        return Objects.equals(city, geoJson.city) && Objects.equals(countryJson, geoJson.countryJson);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(city, countryJson);
     }
 }

@@ -10,6 +10,9 @@ import java.util.UUID;
 
 public interface PaintingRepository extends JpaRepository <PaintingEntity, UUID> {
     @Nonnull
-    Page<PaintingEntity> findAllByNameContainsIgnoreCase(@Nonnull String name,
+    Page<PaintingEntity> findAllByTitleContainsIgnoreCase(@Nonnull String title,
                                                          @Nonnull Pageable pageable);
+    @Nonnull
+    Page<PaintingEntity> findByArtistId(@Nonnull UUID artistId,
+                                        @Nonnull Pageable pageable);
 }

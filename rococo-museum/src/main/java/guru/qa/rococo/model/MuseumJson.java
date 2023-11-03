@@ -4,21 +4,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import guru.qa.rococo.data.MuseumEntity;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "id",
-        "title",
-        "description",
-        "photo",
-        "geo"
-})
 public class MuseumJson {
-
     @JsonProperty("id")
     private UUID id;
     @JsonProperty("title")
@@ -102,7 +91,7 @@ public class MuseumJson {
         museum.setId(entity.getId());
         museum.setTitle(entity.getTitle());
         museum.setDescription(entity.getDescription());
-//        museum.setGeo(entity.getGeo()); //TODO: fix
+        museum.setGeo(GeoJson.fromEntity(entity.getGeo()));
         museum.setPhoto(photo != null && photo.length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null);
         return museum;
     }
