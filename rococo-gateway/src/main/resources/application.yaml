@@ -30,7 +30,7 @@ spring:
 rococo-artist:
   base-uri: 'http://127.0.0.1:9002'
 rococo-userdata:
-  base-uri: 'http://127.0.0.1:8089'
+  base-uri: 'http://127.0.0.1:8092'
 rococo-geo:
   base-uri: 'http://127.0.0.1:8091'
 rococo-museum:
@@ -54,7 +54,7 @@ spring:
 rococo-artist:
   base-uri: 'http://artist.rococo.dc:9002'
 rococo-userdata:
-  base-uri: 'http://userdata.rococo.dc:8089'
+  base-uri: 'http://userdata.rococo.dc:8092'
 rococo-geo:
   base-uri: 'http://geo.rococo.dc:8091'
 rococo-museum:

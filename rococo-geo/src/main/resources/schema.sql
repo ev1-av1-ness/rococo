@@ -1,8 +1,8 @@
 create table if not exists country
 (
-    id                   binary(16)   unique not null default (UUID_TO_BIN(UUID(), true)),
+    country_id           binary(16)   unique not null default (UUID_TO_BIN(UUID(), true)),
     name                 varchar(255)        not null,
-    primary key (id)
+    primary key (country_id)
 );
 
 insert into country (name) values ('Австралия');
@@ -202,10 +202,10 @@ insert into country (name) values ('Япония');
 
 create table if not exists geo
 (
-    id                   binary(16)   unique not null default (UUID_TO_BIN(UUID(), true)),
+    geo_id               binary(16)   unique not null default (UUID_TO_BIN(UUID(), true)),
     city                 varchar(255)        not null,
     country_id           binary(16)          not null,
-    primary key (id),
-    constraint fk_geo_country foreign key (country_id) references country (id)
+    primary key (geo_id),
+    constraint fk_geo_country foreign key (country_id) references country (country_id)
 );
 

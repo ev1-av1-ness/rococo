@@ -2,6 +2,7 @@ package guru.qa.rococo.data;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -9,21 +10,24 @@ import java.util.UUID;
 public class MuseumEntity {
     @Id
     @GeneratedValue(generator = "UUID")
-    @Column(name = "id", columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID(), TRUE))")
+    @Column(name = "museum_id", columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID(), TRUE))")
     private UUID id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false, unique = true)
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "photo", columnDefinition = "bytea")
+    @Column(name = "photo", nullable = false)
     private byte[] photo;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "geo_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "geo_id", nullable = false)
     private GeoEntity geo;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "museum")
+    private Set<PaintingEntity> paintings;
 
     public UUID getId() {
         return id;
@@ -63,5 +67,13 @@ public class MuseumEntity {
 
     public void setGeo(GeoEntity geo) {
         this.geo = geo;
+    }
+
+    public Set<PaintingEntity> getPaintings() {
+        return paintings;
+    }
+
+    public void setPaintings(Set<PaintingEntity> paintings) {
+        this.paintings = paintings;
     }
 }

@@ -12,21 +12,21 @@ public class PaintingEntity {
     @Column(name = "id", columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID(), TRUE))")
     private UUID id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false, unique = true)
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "content", columnDefinition = "bytea")
+    @Column(name = "content", nullable = false)
     private byte[] content;
 
-    @ManyToOne
-    @JoinColumn(name = "museum_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "museum_id", nullable = false)
     private MuseumEntity museum;
 
-    @ManyToOne
-    @JoinColumn(name = "artist_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "artist_id", nullable = false)
     private ArtistEntity artist;
 
     public UUID getId() {
