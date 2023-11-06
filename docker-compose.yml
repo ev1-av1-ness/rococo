@@ -1,4 +1,4 @@
-version: '3.9' #TODO: поправить весь файл!!!!
+version: '3.9'
 
 services:
   rococo-db:
@@ -74,15 +74,80 @@ services:
     container_name: gateway.rococo.dc
     image: ev1av1ness/rococo-gateway:latest
     ports:
-      - "8090:8090"
+      - "8080:8080"
     healthcheck:
-      test: "wget --spider http://localhost:8090/actuator/health || exit 1"
+      test: "wget --spider http://localhost:8080/actuator/health || exit 1"
       interval: 5s
       timeout: 5s
       retries: 10
     restart: always
     depends_on:
-      auth.niffler.dc:
+      auth.rococo.dc:
+        condition: service_healthy
+    networks:
+      - rococo-network
+    dns_search: .
+
+  artist.rococo.dc:
+    container_name: artist.rococo.dc
+    image: ev1av1ness/rococo-artist:latest
+    expose:
+      - "9002"
+    restart: always
+    depends_on:
+      rococo-db:
+        condition: service_healthy
+    networks:
+      - rococo-network
+    dns_search: .
+
+  userdata.rococo.dc:
+    container_name: userdata.rococo.dc
+    image: ev1av1ness/rococo-userdata:latest
+    expose:
+      - "8092"
+    restart: always
+    depends_on:
+      auth.rococo.dc:
+        condition: service_healthy
+    networks:
+      - rococo-network
+    dns_search: .
+
+  geo.rococo.dc:
+    container_name: geo.rococo.dc
+    image: ev1av1ness/rococo-geo:latest
+    expose:
+      - "8091"
+    restart: always
+    depends_on:
+      rococo-db:
+        condition: service_healthy
+    networks:
+      - rococo-network
+    dns_search: .
+
+  museum.rococo.dc:
+    container_name: museum.rococo.dc
+    image: ev1av1ness/rococo-museum:latest
+    expose:
+      - "9004"
+    restart: always
+    depends_on:
+      rococo-db:
+        condition: service_healthy
+    networks:
+      - rococo-network
+    dns_search: .
+
+  painting.rococo.dc:
+    container_name: painting.rococo.dc
+    image: ev1av1ness/rococo-painting:latest
+    expose:
+      - "9006"
+    restart: always
+    depends_on:
+      rococo-db:
         condition: service_healthy
     networks:
       - rococo-network
