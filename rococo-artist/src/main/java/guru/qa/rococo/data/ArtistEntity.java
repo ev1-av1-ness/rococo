@@ -2,14 +2,13 @@ package guru.qa.rococo.data;
 
 import jakarta.persistence.*;
 
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "artist")
+@Table(name = "artist", schema = "rococo-artist")
 public class ArtistEntity {
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "UUID", strategy = GenerationType.AUTO)
     @Column(name = "artist_id", columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID(), TRUE))")
     private UUID id;
 
@@ -22,8 +21,8 @@ public class ArtistEntity {
     @Column(name = "photo", nullable = false)
     private byte[] photo;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "artist")
-    private Set<PaintingEntity> paintings;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "artist")
+//    private Set<PaintingEntity> paintings;
 
     public UUID getId() {
         return id;
@@ -57,11 +56,11 @@ public class ArtistEntity {
         this.photo = photo;
     }
 
-    public Set<PaintingEntity> getPaintings() {
-        return paintings;
-    }
+//    public Set<PaintingEntity> getPaintings() {
+//        return paintings;
+//    }
 
-    public void setPaintings(Set<PaintingEntity> paintings) {
-        this.paintings = paintings;
-    }
+//    public void setPaintings(Set<PaintingEntity> paintings) {
+//        this.paintings = paintings;
+//    }
 }

@@ -2,7 +2,6 @@ package guru.qa.rococo.data;
 
 import jakarta.persistence.*;
 
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -26,8 +25,8 @@ public class MuseumEntity {
     @JoinColumn(name = "geo_id", nullable = false)
     private GeoEntity geo;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "museum")
-    private Set<PaintingEntity> paintings;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "museum")
+//    private Set<PaintingEntity> paintings;
 
     public UUID getId() {
         return id;
@@ -69,11 +68,11 @@ public class MuseumEntity {
         this.geo = geo;
     }
 
-    public Set<PaintingEntity> getPaintings() {
-        return paintings;
-    }
-
-    public void setPaintings(Set<PaintingEntity> paintings) {
-        this.paintings = paintings;
-    }
+//    public Set<PaintingEntity> getPaintings() {
+//        return paintings;
+//    }
+//
+//    public void setPaintings(Set<PaintingEntity> paintings) {
+//        this.paintings = paintings;
+//    }
 }
