@@ -31,7 +31,7 @@ dependencies {
 docker {
     dependsOn build
     name "ev1av1ness/rococo-gateway:${project.version}"
-    tag 'latest', 'ev1av1ness/niffler-gateway:latest'
+    tag 'latest', 'ev1av1ness/rococo-gateway:latest'
     files bootJar.archiveFile
     buildArgs([APP_VER: project.version, DOCKER: project.ext.dockerImage])
     noCache true
@@ -41,10 +41,6 @@ tasks.register('dockerRmi', Exec) {
     workingDir "${buildDir}"
     commandLine 'bash', '-c', "docker rmi -f \$(docker images | grep 'rococo')\n"
 }
-
-//tasks.named('bootJar') { //TODO: маловероятно что нужно
-//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-//}
 
 tasks.named('test') {
     useJUnitPlatform()
