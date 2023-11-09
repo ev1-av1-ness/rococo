@@ -1,7 +1,7 @@
 package guru.qa.rococo.contoller;
 
 import guru.qa.rococo.model.UserJson;
-import guru.qa.rococo.service.api.UserDataClient;
+import guru.qa.rococo.service.api.userdata.UserDataClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,8 @@
-package guru.qa.rococo.service.api;
+package guru.qa.rococo.service.api.geo;
 
 import guru.qa.rococo.model.CountryJson;
+import guru.qa.rococo.service.api.geo.model.GeoDto;
 import jakarta.annotation.Nonnull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,7 +21,6 @@ public class GeoClient {
     private final WebClient webClient;
     private final String rococoGeoBaseUri;
 
-    @Autowired
     public GeoClient(WebClient webClient,
                         @Value("${rococo-geo.base-uri}") String rococoGeoBaseUri) {
         this.webClient = webClient;
@@ -42,6 +41,17 @@ public class GeoClient {
                 .collectList()
                 .map(countryList -> createPage(countryList, pageable)).block();
 
+    }
+
+    public @Nonnull
+    GeoDto findGeoById(@Nonnull String id) {
+        URI uri = UriComponentsBuilder.fromHttpUrl(rococoGeoBaseUri + "/api/geo").path("/{id}").build(id);
+
+        return webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(GeoDto.class)
+                .block();
     }
 
     private Page<CountryJson> createPage(List<CountryJson> countryList, Pageable pageable) {

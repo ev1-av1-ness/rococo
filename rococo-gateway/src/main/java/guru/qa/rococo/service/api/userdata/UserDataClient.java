@@ -1,4 +1,4 @@
-package guru.qa.rococo.service.api;
+package guru.qa.rococo.service.api.userdata;
 
 import guru.qa.rococo.model.UserJson;
 import jakarta.annotation.Nonnull;
@@ -19,7 +19,6 @@ public class UserDataClient {
     private final WebClient webClient;
     private final String rococoUserdataBaseUri;
 
-    @Autowired
     public UserDataClient(WebClient webClient,
                               @Value("${rococo-userdata.base-uri}") String rococoUserdataBaseUri) {
         this.webClient = webClient;

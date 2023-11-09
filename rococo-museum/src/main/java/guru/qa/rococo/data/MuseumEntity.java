@@ -1,14 +1,16 @@
 package guru.qa.rococo.data;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.util.UUID;
 
+@Getter
 @Entity
-@Table(name = "museum")
+@Table(name = "museum", schema = "rococo-museum")
 public class MuseumEntity {
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "UUID", strategy = GenerationType.AUTO)
     @Column(name = "museum_id", columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID(), TRUE))")
     private UUID id;
 
@@ -21,58 +23,26 @@ public class MuseumEntity {
     @Column(name = "photo", nullable = false)
     private byte[] photo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "geo_id", nullable = false)
-    private GeoEntity geo;
-
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "museum")
-//    private Set<PaintingEntity> paintings;
-
-    public UUID getId() {
-        return id;
-    }
+    @Column(name = "geo_id", nullable = false)
+    private UUID geoId;
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public byte[] getPhoto() {
-        return photo;
     }
 
     public void setPhoto(byte[] photo) {
         this.photo = photo;
     }
 
-    public GeoEntity getGeo() {
-        return geo;
+    public void setGeoId(UUID geoId) {
+        this.geoId = geoId;
     }
-
-    public void setGeo(GeoEntity geo) {
-        this.geo = geo;
-    }
-
-//    public Set<PaintingEntity> getPaintings() {
-//        return paintings;
-//    }
-//
-//    public void setPaintings(Set<PaintingEntity> paintings) {
-//        this.paintings = paintings;
-//    }
 }

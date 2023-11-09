@@ -1,15 +1,14 @@
 package guru.qa.rococo.contoller;
 
 import guru.qa.rococo.model.ArtistJson;
-import guru.qa.rococo.service.api.ArtistClient;
+import guru.qa.rococo.service.DataAggergator;
+import guru.qa.rococo.service.api.artist.ArtistClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,10 +17,12 @@ public class ArtistController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArtistController.class);
     private final ArtistClient artistClient;
+    private final DataAggergator dataAggergator;
 
     @Autowired
-    public ArtistController(ArtistClient artistClient) {
+    public ArtistController(ArtistClient artistClient, DataAggergator dataAggergator) {
         this.artistClient = artistClient;
+        this.dataAggergator = dataAggergator;
     }
 
     @GetMapping()
@@ -32,7 +33,7 @@ public class ArtistController {
 
     @GetMapping("/{id}")
     public ArtistJson findArtistById(@PathVariable("id") String id) {
-        return artistClient.findArtistById(id);
+        return dataAggergator.getArtist(id);
     }
 
     @PatchMapping()

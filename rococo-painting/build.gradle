@@ -13,12 +13,11 @@ repositories {
 }
 
 dependencies {
-    implementation project(':rococo-artist')
-    implementation project(':rococo-museum')
-    implementation project(':rococo-geo')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
 
     runtimeOnly "com.mysql:mysql-connector-j:${project.ext.mysqlDriverVersion}"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

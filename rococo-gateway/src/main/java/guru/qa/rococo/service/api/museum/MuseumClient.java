@@ -1,6 +1,7 @@
-package guru.qa.rococo.service.api;
+package guru.qa.rococo.service.api.museum;
 
 import guru.qa.rococo.model.MuseumJson;
+import guru.qa.rococo.service.api.museum.model.MuseumDto;
 import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +24,6 @@ public class MuseumClient {
     private final WebClient webClient;
     private final String rococoMuseumBaseUri;
 
-    @Autowired
     public MuseumClient(WebClient webClient,
                         @Value("${rococo-museum.base-uri}") String rococoMuseumBaseUri) {
         this.webClient = webClient;
@@ -51,7 +51,7 @@ public class MuseumClient {
     }
 
     public @Nonnull
-    Page<MuseumJson> getAll(@Nullable String name, @Nonnull Pageable pageable) {
+    Page<MuseumDto> getAll(@Nullable String name, @Nonnull Pageable pageable) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         if (name != null) {
             params.add("title", name);
@@ -63,24 +63,24 @@ public class MuseumClient {
         return webClient.get()
                 .uri(uri)
                 .retrieve()
-                .bodyToFlux(MuseumJson.class)
+                .bodyToFlux(MuseumDto.class)
                 .collectList()
                 .map(museumList -> createPage(museumList, pageable)).block();
 
     }
 
     public @Nonnull
-    MuseumJson findMuseumById(@Nonnull String id) {
+    MuseumDto findMuseumById(@Nonnull String id) {
         URI uri = UriComponentsBuilder.fromHttpUrl(rococoMuseumBaseUri + "/api/museum").path("/{id}").build(id);
 
         return webClient.get()
                 .uri(uri)
                 .retrieve()
-                .bodyToMono(MuseumJson.class)
+                .bodyToMono(MuseumDto.class)
                 .block();
     }
 
-    private Page<MuseumJson> createPage(List<MuseumJson> museumList, Pageable pageable) {
+    private Page<MuseumDto> createPage(List<MuseumDto> museumList, Pageable pageable) {
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), museumList.size());
         return new PageImpl<>(museumList.subList(start, end), pageable, museumList.size());

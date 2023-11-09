@@ -23,7 +23,7 @@ import java.util.UUID;
 @Component
 public class PaintingService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MuseumService.class);  //TODO: доп обработка
+    private static final Logger LOG = LoggerFactory.getLogger(PaintingService.class);
 
     private final PaintingRepository paintingRepository;
 
@@ -55,40 +55,16 @@ public class PaintingService {
         return paintingEntities.map(PaintingJson::fromEntity);
     }
 
-    public @Nonnull PaintingJson createPainting(@Nonnull PaintingJson paintingJson) {
+    public @Nonnull PaintingJson createPainting(@Nonnull PaintingJson painting) {
         PaintingEntity paintingEntity = new PaintingEntity();
-        paintingEntity.setTitle(paintingJson.getTitle());
-        paintingEntity.setDescription(paintingJson.getDescription());
-        paintingEntity.setContent(paintingJson.getContent() != null ? paintingJson.getContent().getBytes(StandardCharsets.UTF_8) : null);
-
-        MuseumEntity museum = getMuseumEntity(paintingJson);
-
-        ArtistEntity artist = new ArtistEntity();
-        artist.setName(paintingJson.getArtist().getName());
-        artist.setBiography(paintingJson.getArtist().getBiography());
-        artist.setPhoto(paintingJson.getArtist().getPhoto() != null ? paintingJson.getArtist().getPhoto().getBytes(StandardCharsets.UTF_8) : null);
-
-        paintingEntity.setMuseum(museum);
-        paintingEntity.setArtist(artist);
+        paintingEntity.setTitle(painting.getTitle());
+        paintingEntity.setDescription(painting.getDescription());
+        paintingEntity.setContent(painting.getContent() != null ? painting.getContent().getBytes(StandardCharsets.UTF_8) : null);
+        paintingEntity.setMuseumId(painting.getMuseumId());
+        paintingEntity.setArtistId(painting.getArtistId());
 
         PaintingEntity saved = paintingRepository.save(paintingEntity);
         return PaintingJson.fromEntity(saved);
-    }
-
-    private static MuseumEntity getMuseumEntity(@Nonnull PaintingJson painting) {
-        CountryEntity countryMuseumEntity = new CountryEntity();
-        countryMuseumEntity.setName(painting.getMuseum().getGeo().getCountry().getName());
-
-        GeoEntity geoMuseumEntity = new GeoEntity();
-        geoMuseumEntity.setCity(painting.getMuseum().getGeo().getCity());
-        geoMuseumEntity.setCountry(countryMuseumEntity);
-
-        MuseumEntity museum = new MuseumEntity();
-        museum.setTitle(painting.getTitle());
-        museum.setDescription(painting.getDescription());
-        museum.setPhoto(painting.getMuseum().getPhoto() != null ? painting.getMuseum().getPhoto().getBytes(StandardCharsets.UTF_8) : null);
-        museum.setGeo(geoMuseumEntity);
-        return museum;
     }
 
     public @Nonnull PaintingJson changePainting(@Nonnull PaintingJson painting) {
@@ -100,14 +76,8 @@ public class PaintingService {
             paintingEntity.setTitle(painting.getTitle());
             paintingEntity.setContent(painting.getContent() != null ? painting.getContent().getBytes(StandardCharsets.UTF_8) : null);
             paintingEntity.setDescription(painting.getDescription());
-
-            ArtistEntity artist = new ArtistEntity();
-            artist.setName(painting.getArtist().getName());
-            artist.setBiography(painting.getArtist().getBiography());
-            artist.setPhoto(painting.getArtist().getPhoto() != null ? painting.getArtist().getPhoto().getBytes(StandardCharsets.UTF_8) : null);
-
-            paintingEntity.setMuseum(getMuseumEntity(painting));
-            paintingEntity.setArtist(artist);
+            paintingEntity.setMuseumId(painting.getMuseumId());
+            paintingEntity.setArtistId(painting.getArtistId());
 
             return PaintingJson.fromEntity(paintingRepository.save(paintingEntity));
         }

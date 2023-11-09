@@ -1,9 +1,11 @@
 package guru.qa.rococo.data;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.util.UUID;
 
+@Getter
 @Entity
 @Table(name = "geo", schema = "rococo-geo")
 public class GeoEntity {
@@ -19,24 +21,12 @@ public class GeoEntity {
     @JoinColumn(name = "country_id", referencedColumnName = "country_id", nullable = false)
     private CountryEntity country;
 
-    public UUID getId() {
-        return id;
-    }
-
     public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getCity() {
-        return city;
-    }
-
     public void setCity(String city) {
         this.city = city;
-    }
-
-    public CountryEntity getCountry() {
-        return country;
     }
 
     public void setCountry(CountryEntity country) {

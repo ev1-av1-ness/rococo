@@ -24,6 +24,8 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework:spring-webflux"
     implementation "io.projectreactor.netty:reactor-netty"
+    annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

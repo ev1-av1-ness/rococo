@@ -1,7 +1,5 @@
 package guru.qa.rococo.service;
 
-import guru.qa.rococo.data.CountryEntity;
-import guru.qa.rococo.data.GeoEntity;
 import guru.qa.rococo.data.MuseumEntity;
 import guru.qa.rococo.data.repository.MuseumRepository;
 import guru.qa.rococo.ex.NotFoundException;
@@ -57,15 +55,7 @@ public class MuseumService {
         museumEntity.setTitle(museum.getTitle());
         museumEntity.setDescription(museum.getDescription());
         museumEntity.setPhoto(museum.getPhoto() != null ? museum.getPhoto().getBytes(StandardCharsets.UTF_8) : null);
-
-        CountryEntity country = new CountryEntity();
-        country.setName(museum.getGeo().getCountry().getName());
-
-        GeoEntity geo = new GeoEntity();
-        geo.setCity(museum.getGeo().getCity());
-        geo.setCountry(country);
-
-        museumEntity.setGeo(geo);
+        museumEntity.setGeoId(museum.getGeoId());
 
         MuseumEntity saved = museumRepository.save(museumEntity);
         return MuseumJson.fromEntity(saved);
@@ -81,15 +71,7 @@ public class MuseumService {
             museumEntity.setTitle(museum.getTitle());
             museumEntity.setDescription(museum.getDescription());
             museumEntity.setPhoto(museum.getPhoto() != null ? museum.getPhoto().getBytes(StandardCharsets.UTF_8) : null);
-
-            CountryEntity country = new CountryEntity();
-            country.setName(museum.getGeo().getCountry().getName());
-
-            GeoEntity geo = new GeoEntity();
-            geo.setCity(museum.getGeo().getCity());
-            geo.setCountry(country);
-
-            museumEntity.setGeo(geo);
+            museumEntity.setGeoId(museum.getGeoId());
 
             return MuseumJson.fromEntity(museumRepository.save(museumEntity));
         }

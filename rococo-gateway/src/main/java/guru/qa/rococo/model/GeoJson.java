@@ -1,7 +1,6 @@
 package guru.qa.rococo.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Objects;
 
 public class GeoJson {
@@ -35,21 +34,14 @@ public class GeoJson {
     }
 
     @Override
-    public int hashCode() {
-        int result = 1;
-        result = ((result* 31)+((this.countryJson == null)? 0 :this.countryJson.hashCode()));
-        result = ((result* 31)+((this.city == null)? 0 :this.city.hashCode()));
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GeoJson geoJson)) return false;
+        return Objects.equals(city, geoJson.city) && Objects.equals(countryJson, geoJson.countryJson);
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if (!(other instanceof GeoJson rhs)) {
-            return false;
-        }
-        return (Objects.equals(this.countryJson, rhs.countryJson) &&(Objects.equals(this.city, rhs.city)));
+    public int hashCode() {
+        return Objects.hash(city, countryJson);
     }
 }
