@@ -75,7 +75,7 @@ public class MuseumJson {
         this.geo = geo;
     }
 
-    public String getGeoId() {
+    public UUID getGeoId() {
         return geoId;
     }
 

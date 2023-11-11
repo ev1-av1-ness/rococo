@@ -1,7 +1,6 @@
 package guru.qa.rococo.service.api.artist;
 
 import guru.qa.rococo.model.ArtistJson;
-import guru.qa.rococo.service.api.artist.model.ArtistJson;
 import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;

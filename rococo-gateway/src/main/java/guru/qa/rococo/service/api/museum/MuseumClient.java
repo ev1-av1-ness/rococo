@@ -1,9 +1,7 @@
 package guru.qa.rococo.service.api.museum;
 
 import guru.qa.rococo.model.MuseumJson;
-import guru.qa.rococo.service.api.museum.model.MuseumJson;
 import jakarta.annotation.Nonnull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
