@@ -26,7 +26,7 @@ public class GeoController {
         return geoService.getAll(pageable);
     }
 
-    @GetMapping("api/geo/{id}")
+    @GetMapping("/api/geo/{id}")
     public GeoJson findGeoById(@PathVariable("id") String id) {
         return geoService.findGeoById(id);
     }

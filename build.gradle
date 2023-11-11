@@ -21,10 +21,13 @@ subprojects {
                 ? "arm64"
                 : "amd64"
         registry = "ev1av1ness"
-        oauth2AuthorizationServerVersion = '1.1.1'
         jsr305Version = '3.0.2'
-        lombokVersion = '1.18.24'
+        lombokVersion = '1.18.30'
+        springKafkaVersion = '3.0.11'
         mysqlDriverVersion = '8.0.33'
+        flywayVersion = '9.22.2'
+        oauth2AuthorizationServerVersion = '1.1.2'
+        oauth2ResourceServerVersion = '3.1.4'
     }
 }
 

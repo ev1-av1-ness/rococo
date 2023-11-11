@@ -5,8 +5,10 @@ import guru.qa.rococo.data.GeoEntity;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.UUID;
 
 public class GeoJson {
+    private UUID id;
     @JsonProperty("city")
     private String city;
     @JsonProperty("country")
@@ -35,8 +37,17 @@ public class GeoJson {
         this.countryJson = country;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     public static GeoJson fromEntity(GeoEntity entity) {
         GeoJson geo = new GeoJson();
+        geo.setId(entity.getId());
         geo.setCity(entity.getCity());
         geo.setCountry(CountryJson.fromEntity(entity.getCountry()));
         return geo;

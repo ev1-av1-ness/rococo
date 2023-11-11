@@ -11,14 +11,14 @@ import java.util.UUID;
 public class GeoEntity {
     @Id
     @GeneratedValue(generator = "UUID", strategy = GenerationType.AUTO)
-    @Column(name = "geo_id", columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID(), TRUE))")
+    @Column(name = "id", columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID(), TRUE))")
     private UUID id;
 
     @Column(name = "city", nullable = false)
     private String city;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "country_id", referencedColumnName = "country_id", nullable = false)
+    @JoinColumn(name = "country_id", referencedColumnName = "id", nullable = false)
     private CountryEntity country;
 
     public void setId(UUID id) {
