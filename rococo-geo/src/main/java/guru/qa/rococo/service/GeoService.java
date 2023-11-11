@@ -1,7 +1,7 @@
 package guru.qa.rococo.service;
 
 import guru.qa.rococo.data.CountryEntity;
-import guru.qa.rococo.data.GeoEntity;
+import guru.qa.rococo.data.repository.CountryRepository;
 import guru.qa.rococo.data.repository.GeoRepository;
 import guru.qa.rococo.ex.NotFoundException;
 import guru.qa.rococo.model.CountryJson;
@@ -18,15 +18,17 @@ import java.util.UUID;
 @Component
 public class GeoService {
     private final GeoRepository geoRepository;
+    private final CountryRepository countryRepository;
 
     @Autowired
-    public GeoService(GeoRepository geoRepository) {
+    public GeoService(GeoRepository geoRepository, CountryRepository countryRepository) {
         this.geoRepository = geoRepository;
+        this.countryRepository = countryRepository;
     }
 
     @Transactional(readOnly = true)
     public @Nonnull Page<CountryJson> getAll(@Nonnull Pageable pageable) {
-        Page<CountryEntity> countryEntities = geoRepository.findAll(pageable).map(GeoEntity::getCountry);
+        Page<CountryEntity> countryEntities = countryRepository.findAll(pageable);
         return countryEntities.map(CountryJson::fromEntity);
     }
 
