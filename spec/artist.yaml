@@ -1,0 +1,96 @@
+openapi: 3.0.0
+info:
+  title: Artist API
+  version: 1.0.0
+paths:
+  /api/artist:
+    get:
+      summary: Get artists
+      parameters:
+        - name: size
+          in: query
+          description: The number of artists to retrieve per page
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 100
+        - name: page
+          in: query
+          description: The page number to retrieve
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Artist'
+#https://stackoverflow.com/questions/61307411/openapi-generator-pageable-with-spring
+                  pageable:
+                    $ref: '#/components/schemas/Pageable'
+                  last:
+                    type: boolean
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+                  number:
+                    type: integer
+                  sort:
+                    $ref: '#/components/schemas/Sort'
+                  first:
+                    type: boolean
+                  size:
+                    type: integer
+                  numberOfElements:
+                    type: integer
+                  empty:
+                    type: boolean
+components:
+  schemas:
+    Artist:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        biography:
+          type: string
+        photo:
+          type: string
+          format: byte
+    Pageable:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+        pageSize:
+          type: integer
+        sort:
+          $ref: '#/components/schemas/Sort'
+        offset:
+          type: integer
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
+    Sort:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean

@@ -1,0 +1,109 @@
+openapi: 3.0.0
+info:
+  title: Country API
+  version: 1.0.0
+paths:
+  /api/country:
+    get:
+      summary: Retrieve countries
+      parameters:
+        - in: query
+          name: size
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 100
+          description: Number of countries per page
+        - in: query
+          name: page
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+          description: Page number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Geo'
+                  pageable:
+                    $ref: '#/components/schemas/Pageable'
+                  last:
+                    type: boolean
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+                  number:
+                    type: integer
+                  first:
+                    type: boolean
+                  sort:
+                    $ref: '#/components/schemas/Sort'
+                  size:
+                    type: integer
+                  numberOfElements:
+                    type: integer
+                  empty:
+                    type: boolean
+
+components:
+  schemas:
+    Geo:
+      type: object
+      properties:
+        city:
+          type: string
+        country:
+          $ref: '#/components/schemas/Country'
+    Country:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+    Pageable:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          format: int32
+          description: The current page number
+        pageSize:
+          type: integer
+          format: int32
+          description: The number of items per page
+        sort:
+          $ref: '#/components/schemas/Sort'
+        offset:
+          type: integer
+          format: int64
+          description: The offset of the current page
+        paged:
+          type: boolean
+          description: Indicates if the results are paged
+        unpaged:
+          type: boolean
+          description: Indicates if the results are not paged
+    Sort:
+      type: object
+      properties:
+        empty:
+          type: boolean
+          description: Indicates if the sort is empty
+        sorted:
+          type: boolean
+          description: Indicates if the sort is sorted
+        unsorted:
+          type: boolean
+          description: Indicates if the sort is unsorted

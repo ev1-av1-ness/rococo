@@ -1,0 +1,170 @@
+openapi: 3.0.0
+info:
+  title: Painting API
+  version: 1.0.0
+paths:
+  /api/painting:
+    get:
+      summary: Get paintings
+      parameters:
+        - in: query
+          name: size
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 100
+          description: Number of items per page
+        - in: query
+          name: page
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+          description: Page number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Painting'
+                  pageable:
+                    $ref: '#/components/schemas/Pageable'
+                  last:
+                    type: boolean
+                    description: Indicates if it's the last page
+                  totalPages:
+                    type: integer
+                    format: int32
+                    description: The total number of pages
+                  totalElements:
+                    type: integer
+                    format: int64
+                    description: The total number of elements
+                  number:
+                    type: integer
+                    format: int32
+                    description: The current page number
+                  first:
+                    type: boolean
+                    description: Indicates if it's the first page
+                  sort:
+                    $ref: '#/components/schemas/Sort'
+                  size:
+                    type: integer
+                    format: int32
+                    description: The number of items per page
+                  numberOfElements:
+                    type: integer
+                    format: int32
+                    description: The number of elements on the current page
+                  empty:
+                    type: boolean
+                    description: Indicates if the content is empty
+components:
+  schemas:
+    Painting:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the painting
+        title:
+          type: string
+          description: The title of the painting
+        description:
+          type: string
+          description: The description of the painting
+        content:
+          type: string
+          format: byte
+          description: The content of the painting
+        museum:
+          $ref: '#/components/schemas/Museum'
+        artist:
+          $ref: '#/components/schemas/Artist'
+    Artist:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        biography:
+          type: string
+        photo:
+          type: string
+          format: byte
+    Museum:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        photo:
+          type: string
+          format: byte
+        geo:
+          $ref: '#/components/schemas/Geo'
+    Geo:
+      type: object
+      properties:
+        city:
+          type: string
+        country:
+          $ref: '#/components/schemas/Country'
+    Country:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+    Pageable:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          format: int32
+          description: The current page number
+        pageSize:
+          type: integer
+          format: int32
+          description: The number of items per page
+        sort:
+          $ref: '#/components/schemas/Sort'
+        offset:
+          type: integer
+          format: int64
+          description: The offset of the current page
+        paged:
+          type: boolean
+          description: Indicates if the results are paged
+        unpaged:
+          type: boolean
+          description: Indicates if the results are not paged
+    Sort:
+      type: object
+      properties:
+        empty:
+          type: boolean
+          description: Indicates if the sort is empty
+        sorted:
+          type: boolean
+          description: Indicates if the sort is sorted
+        unsorted:
+          type: boolean
+          description: Indicates if the sort is unsorted
