@@ -1,10 +1,12 @@
 package guru.qa.rococo.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 import java.util.UUID;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MuseumJson {
 
     @JsonProperty("id")
@@ -17,6 +19,7 @@ public class MuseumJson {
     private String photo;
     @JsonProperty("geo")
     private GeoJson geo;
+    private UUID geoId;
 
 
     public MuseumJson() {
@@ -70,6 +73,14 @@ public class MuseumJson {
     @JsonProperty("geo")
     public void setGeo(GeoJson geo) {
         this.geo = geo;
+    }
+
+    public String getGeoId() {
+        return geoId;
+    }
+
+    public void setGeoId(UUID geoId) {
+        this.geoId = geoId;
     }
 
     @Override

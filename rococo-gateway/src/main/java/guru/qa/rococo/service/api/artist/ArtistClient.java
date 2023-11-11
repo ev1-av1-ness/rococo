@@ -1,7 +1,7 @@
 package guru.qa.rococo.service.api.artist;
 
 import guru.qa.rococo.model.ArtistJson;
-import guru.qa.rococo.service.api.artist.model.ArtistDto;
+import guru.qa.rococo.service.api.artist.model.ArtistJson;
 import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -69,13 +69,13 @@ public class ArtistClient {
     }
 
     public @Nonnull
-    ArtistDto findArtistById(@Nonnull String id) {
+    ArtistJson findArtistById(@Nonnull String id) {
         URI uri = UriComponentsBuilder.fromHttpUrl(rococoArtistBaseUri + "/api/artist").path("/{id}").build(id);
 
         return webClient.get()
                 .uri(uri)
                 .retrieve()
-                .bodyToMono(ArtistDto.class)
+                .bodyToMono(ArtistJson.class)
                 .block();
     }
 

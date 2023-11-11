@@ -1,7 +1,6 @@
 package guru.qa.rococo.service.api.painting;
 
 import guru.qa.rococo.model.PaintingJson;
-import guru.qa.rococo.service.api.painting.model.PaintingDto;
 import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -50,7 +49,7 @@ public class PaintingClient {
     }
 
     public @Nonnull
-    Page<PaintingDto> getAll(@Nullable String name, @Nonnull Pageable pageable) {
+    Page<PaintingJson> getAll(@Nullable String name, @Nonnull Pageable pageable) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         if (name != null) {
             params.add("title", name);
@@ -62,24 +61,24 @@ public class PaintingClient {
         return webClient.get()
                 .uri(uri)
                 .retrieve()
-                .bodyToFlux(PaintingDto.class)
+                .bodyToFlux(PaintingJson.class)
                 .collectList()
                 .map(paintingList -> createPage(paintingList, pageable)).block();
 
     }
 
     public @Nonnull
-    PaintingDto findPaintingById(@Nonnull String id) {
+    PaintingJson findPaintingById(@Nonnull String id) {
         URI uri = UriComponentsBuilder.fromHttpUrl(rococoPaintingBaseUri + "/api/painting").path("/{id}").build(id);
 
         return webClient.get()
                 .uri(uri)
                 .retrieve()
-                .bodyToMono(PaintingDto.class)
+                .bodyToMono(PaintingJson.class)
                 .block();
     }
 
-    private Page<PaintingDto> createPage(List<PaintingDto> paintingList, Pageable pageable) {
+    private Page<PaintingJson> createPage(List<PaintingJson> paintingList, Pageable pageable) {
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), paintingList.size());
         return new PageImpl<>(paintingList.subList(start, end), pageable, paintingList.size());
@@ -87,7 +86,7 @@ public class PaintingClient {
 
 
     public @Nonnull
-    Page<PaintingDto> findPaintingByAuthorId(@Nonnull String artistId, @Nonnull Pageable pageable) {
+    Page<PaintingJson> findPaintingByAuthorId(@Nonnull String artistId, @Nonnull Pageable pageable) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("size", String.valueOf(pageable.getPageSize()));
         params.add("page", String.valueOf(pageable.getPageNumber()));
@@ -98,7 +97,7 @@ public class PaintingClient {
         return webClient.get()
                 .uri(uri)
                 .retrieve()
-                .bodyToFlux(PaintingDto.class)
+                .bodyToFlux(PaintingJson.class)
                 .collectList()
                 .map(paintingList -> createPage(paintingList, pageable)).block();
     }

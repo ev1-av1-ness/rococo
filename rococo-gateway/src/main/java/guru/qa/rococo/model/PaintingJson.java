@@ -1,10 +1,12 @@
 package guru.qa.rococo.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 import java.util.UUID;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PaintingJson {
 
     @JsonProperty("id")
@@ -15,6 +17,8 @@ public class PaintingJson {
     private String description;
     @JsonProperty("content")
     private String content;
+    private UUID museumId;
+    private UUID artistId;
     @JsonProperty("museum")
     private MuseumJson museum;
     @JsonProperty("artist")
@@ -81,6 +85,22 @@ public class PaintingJson {
     @JsonProperty("artist")
     public void setArtist(ArtistJson artist) {
         this.artist = artist;
+    }
+
+    public UUID getMuseumId() {
+        return museumId;
+    }
+
+    public void setMuseumId(UUID museumId) {
+        this.museumId = museumId;
+    }
+
+    public UUID getArtistId() {
+        return artistId;
+    }
+
+    public void setArtistId(UUID artistId) {
+        this.artistId = artistId;
     }
 
     @Override

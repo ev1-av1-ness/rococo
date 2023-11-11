@@ -1,7 +1,7 @@
 package guru.qa.rococo.service.api.geo;
 
 import guru.qa.rococo.model.CountryJson;
-import guru.qa.rococo.service.api.geo.model.GeoDto;
+import guru.qa.rococo.model.GeoJson;
 import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -44,13 +44,13 @@ public class GeoClient {
     }
 
     public @Nonnull
-    GeoDto findGeoById(@Nonnull String id) {
+    GeoJson findGeoById(@Nonnull String id) {
         URI uri = UriComponentsBuilder.fromHttpUrl(rococoGeoBaseUri + "/api/geo").path("/{id}").build(id);
 
         return webClient.get()
                 .uri(uri)
                 .retrieve()
-                .bodyToMono(GeoDto.class)
+                .bodyToMono(GeoJson.class)
                 .block();
     }
 

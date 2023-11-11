@@ -3,20 +3,17 @@ package guru.qa.rococo.contoller;
 import guru.qa.rococo.model.PaintingJson;
 import guru.qa.rococo.service.DataAggergator;
 import guru.qa.rococo.service.api.painting.PaintingClient;
-import guru.qa.rococo.service.api.painting.model.PaintingDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
+@RequestMapping("/api/painting")
 public class PaintingController {
     private static final Logger LOG = LoggerFactory.getLogger(PaintingController.class);
 
@@ -24,23 +21,16 @@ public class PaintingController {
     private final DataAggergator dataAggregator;
 
     @Autowired
-    public PaintingController(PaintingClient paintingClient, DataAggergator dataAggergator) {
+    public PaintingController(PaintingClient paintingClient, DataAggergator dataAggregator) {
         this.paintingClient = paintingClient;
-        this.dataAggregator = dataAggergator;
+        this.dataAggregator = dataAggregator;
     }
 
     @GetMapping()
     public Page<PaintingJson> getAll(@RequestParam(required = false) String name,
-                                   @PageableDefault Pageable pageable) {
-        Page<PaintingDto> paintingDtoPage = paintingClient.getAll(name, pageable);
-        List<PaintingJson> paintingJsonList = new ArrayList<>();
-
-        for (PaintingDto paintingDto : paintingDtoPage.getContent()) {
-            PaintingJson paintingJson = dataAggregator.getPainting(String.valueOf(paintingDto.getId()));
-            paintingJsonList.add(paintingJson);
-        }
-
-        return new PageImpl<>(paintingJsonList, paintingDtoPage.getPageable(), paintingDtoPage.getTotalElements());
+                                     @PageableDefault Pageable pageable) {
+        Page<PaintingJson> paintingJsonPage = paintingClient.getAll(name, pageable);
+        return dataAggregator.enrichPaintings(paintingJsonPage);
     }
 
     @GetMapping("/{id}")
@@ -51,15 +41,7 @@ public class PaintingController {
     @GetMapping("/author/{artistId}")
     public Page<PaintingJson> findPaintingByAuthorId(@PathVariable("artistId") String artistId,
                                                      @PageableDefault Pageable pageable) {
-        Page<PaintingDto> paintingDtoPage = paintingClient.findPaintingByAuthorId(artistId, pageable);
-        List<PaintingJson> paintingJsonList = new ArrayList<>();
-
-        for (PaintingDto paintingDto : paintingDtoPage.getContent()) {
-            PaintingJson paintingJson = dataAggregator.getPainting(String.valueOf(paintingDto.getId()));
-            paintingJsonList.add(paintingJson);
-        }
-
-        return new PageImpl<>(paintingJsonList, paintingDtoPage.getPageable(), paintingDtoPage.getTotalElements());
+        return paintingClient.findPaintingByAuthorId(artistId, pageable);
     }
 
     @PatchMapping()
@@ -72,5 +54,4 @@ public class PaintingController {
             @RequestBody PaintingJson painting) {
         return paintingClient.addPainting(painting);
     }
-
 }

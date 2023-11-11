@@ -5,14 +5,15 @@ import guru.qa.rococo.model.GeoJson;
 import guru.qa.rococo.model.MuseumJson;
 import guru.qa.rococo.model.PaintingJson;
 import guru.qa.rococo.service.api.artist.ArtistClient;
-import guru.qa.rococo.service.api.artist.model.ArtistDto;
 import guru.qa.rococo.service.api.geo.GeoClient;
-import guru.qa.rococo.service.api.geo.model.GeoDto;
 import guru.qa.rococo.service.api.museum.MuseumClient;
-import guru.qa.rococo.service.api.museum.model.MuseumDto;
 import guru.qa.rococo.service.api.painting.PaintingClient;
-import guru.qa.rococo.service.api.painting.model.PaintingDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class DataAggergator {
@@ -30,15 +31,19 @@ public class DataAggergator {
     }
 
     public PaintingJson getPainting(String id) {
-        PaintingDto paintingDto = paintingClient.findPaintingById(id);
-        ArtistJson artistJson = getArtist(String.valueOf(paintingDto.getArtistId()));
-        MuseumJson museumJson = getMuseum(String.valueOf(paintingDto.getMuseumId()));
+        PaintingJson paintingJson = paintingClient.findPaintingById(id);
+        paintingJson.setMuseum(museumClient.findMuseumById(String.valueOf(paintingJson.getMuseumId())));
+        paintingJson.setArtist(artistClient.findArtistById(String.valueOf(paintingJson.getArtistId())));
 
-        PaintingJson paintingJson = new PaintingJson();
+        ArtistJson artistJson = getArtist(String.valueOf(paintingJson.getArtist()));
+        MuseumJson museumJson = getMuseum(String.valueOf(paintingJson.getMuseum()));
+
         paintingJson.setMuseum(museumJson);
         paintingJson.setArtist(artistJson);
-        paintingJson.setContent(paintingDto.getContent());
-        paintingJson.setDescription(paintingDto.getDescription());
+        paintingJson.setArtistId(null);
+        paintingJson.setMuseumId(null);
+        paintingJson.setContent(paintingJson.getContent());
+        paintingJson.setDescription(paintingJson.getDescription());
         paintingJson.setTitle(paintingJson.getTitle());
         paintingJson.setId(paintingJson.getId());
 
@@ -46,10 +51,9 @@ public class DataAggergator {
     }
 
     public ArtistJson getArtist(String id) {
-        ArtistDto artistDto = artistClient.findArtistById(id);
+        ArtistJson artistJson = artistClient.findArtistById(id);
 
-        ArtistJson artistJson = new ArtistJson();
-        artistJson.setId(artistDto.getId());
+        artistJson.setId(artistJson.getId());
         artistJson.setPhoto(artistJson.getPhoto());
         artistJson.setBiography(artistJson.getBiography());
         artistJson.setName(artistJson.getName());
@@ -57,30 +61,49 @@ public class DataAggergator {
     }
 
     public MuseumJson getMuseum(String id) {
-        MuseumDto museumDto = museumClient.findMuseumById(id);
-        GeoDto geoDto = geoClient.findGeoById(museumDto.getGeoId());
+        MuseumJson museumJson = museumClient.findMuseumById(id);
+        GeoJson geoJson = geoClient.findGeoById(museumJson.getGeoId());
 
-        MuseumJson museumJson = new MuseumJson();
-        GeoJson geoJson = new GeoJson();
-        geoJson.setCity(geoDto.getCity());
-        geoJson.setCountry(geoDto.getCountry());
+        geoJson.setCity(geoJson.getCity());
+        geoJson.setCountry(geoJson.getCountry());
 
-        museumJson.setId(museumDto.getId());
-        museumJson.setTitle(museumDto.getTitle());
-        museumJson.setDescription(museumDto.getDescription());
-        museumJson.setPhoto(museumDto.getPhoto());
+        museumJson.setId(museumJson.getId());
+        museumJson.setTitle(museumJson.getTitle());
+        museumJson.setDescription(museumJson.getDescription());
+        museumJson.setPhoto(museumJson.getPhoto());
         museumJson.setGeo(geoJson);
 
         return museumJson;
     }
 
     public GeoJson getGeo(String id) {
-        GeoDto geoDto = geoClient.findGeoById(id);
+        GeoJson geoJson = geoClient.findGeoById(id);
 
-        GeoJson geoJson = new GeoJson();
-        geoJson.setCity(geoDto.getCity());
-        geoJson.setCountry(geoDto.getCountry());
+        geoJson.setCity(geoJson.getCity());
+        geoJson.setCountry(geoJson.getCountry());
 
         return geoJson;
+    }
+
+    public Page<PaintingJson> enrichPaintings(Page<PaintingJson> paintingJsonPage) {
+        List<PaintingJson> enrichedPaintings = new ArrayList<>();
+
+        for (PaintingJson paintingJson : paintingJsonPage) {
+            PaintingJson enrichedPainting = getPainting(String.valueOf(paintingJson.getId()));
+            enrichedPaintings.add(enrichedPainting);
+        }
+
+        return new PageImpl<>(enrichedPaintings, paintingJsonPage.getPageable(), paintingJsonPage.getTotalElements());
+    }
+
+    public Page<MuseumJson> enrichMuseums(Page<MuseumJson> museumJsonPage) {
+        List<MuseumJson> enrichedMuseums = new ArrayList<>();
+
+        for (MuseumJson museumJson : museumJsonPage) {
+            MuseumJson enrichedMuseum = getMuseum(String.valueOf(museumJson.getId()));
+            enrichedMuseums.add(enrichedMuseum);
+        }
+
+        return new PageImpl<>(enrichedMuseums, museumJsonPage.getPageable(), museumJsonPage.getTotalElements());
     }
 }

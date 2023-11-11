@@ -17,12 +17,10 @@ public class ArtistController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArtistController.class);
     private final ArtistClient artistClient;
-    private final DataAggergator dataAggergator;
 
     @Autowired
-    public ArtistController(ArtistClient artistClient, DataAggergator dataAggergator) {
+    public ArtistController(ArtistClient artistClient) {
         this.artistClient = artistClient;
-        this.dataAggergator = dataAggergator;
     }
 
     @GetMapping()
@@ -33,7 +31,7 @@ public class ArtistController {
 
     @GetMapping("/{id}")
     public ArtistJson findArtistById(@PathVariable("id") String id) {
-        return dataAggergator.getArtist(id);
+        return artistClient.findArtistById(id);
     }
 
     @PatchMapping()
