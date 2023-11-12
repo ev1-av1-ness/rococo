@@ -2,6 +2,7 @@ package guru.qa.rococo.service.api.museum;
 
 import guru.qa.rococo.model.MuseumJson;
 import jakarta.annotation.Nonnull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,6 +23,7 @@ public class MuseumClient {
     private final WebClient webClient;
     private final String rococoMuseumBaseUri;
 
+    @Autowired
     public MuseumClient(WebClient webClient,
                         @Value("${rococo-museum.base-uri}") String rococoMuseumBaseUri) {
         this.webClient = webClient;

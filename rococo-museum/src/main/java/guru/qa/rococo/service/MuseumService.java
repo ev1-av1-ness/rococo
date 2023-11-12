@@ -33,10 +33,10 @@ public class MuseumService {
     }
 
     @Transactional(readOnly = true)
-    public @Nonnull Page<MuseumJson> getAll(@Nullable String name, @Nonnull Pageable pageable) {
-        Page<MuseumEntity> museumEntities = (name == null)
+    public @Nonnull Page<MuseumJson> getAll(@Nullable String title, @Nonnull Pageable pageable) {
+        Page<MuseumEntity> museumEntities = (title == null)
                 ? museumRepository.findAll(pageable)
-                : museumRepository.findAllByTitleContainsIgnoreCase(name, pageable);
+                : museumRepository.findAllByTitleContainsIgnoreCase(title, pageable);
         return museumEntities.map(MuseumJson::fromEntity);
     }
 

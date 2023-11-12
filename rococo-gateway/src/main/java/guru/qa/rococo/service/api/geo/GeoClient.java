@@ -2,8 +2,11 @@ package guru.qa.rococo.service.api.geo;
 
 import guru.qa.rococo.model.CountryJson;
 import guru.qa.rococo.model.GeoJson;
+import guru.qa.rococo.service.api.CustomPageImpl;
 import jakarta.annotation.Nonnull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +24,7 @@ public class GeoClient {
     private final WebClient webClient;
     private final String rococoGeoBaseUri;
 
+    @Autowired
     public GeoClient(WebClient webClient,
                         @Value("${rococo-geo.base-uri}") String rococoGeoBaseUri) {
         this.webClient = webClient;
@@ -37,10 +41,8 @@ public class GeoClient {
         return webClient.get()
                 .uri(uri)
                 .retrieve()
-                .bodyToFlux(CountryJson.class)
-                .collectList()
-                .map(countryList -> createPage(countryList, pageable)).block();
-
+                .bodyToMono(new ParameterizedTypeReference<CustomPageImpl<CountryJson>>() {})
+                .block();
     }
 
     public @Nonnull
@@ -52,11 +54,5 @@ public class GeoClient {
                 .retrieve()
                 .bodyToMono(GeoJson.class)
                 .block();
-    }
-
-    private Page<CountryJson> createPage(List<CountryJson> countryList, Pageable pageable) {
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), countryList.size());
-        return new PageImpl<>(countryList.subList(start, end), pageable, countryList.size());
     }
 }

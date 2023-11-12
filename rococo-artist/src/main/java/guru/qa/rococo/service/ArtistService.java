@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +23,7 @@ import java.util.UUID;
 @Component
 public class ArtistService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ArtistService.class); //TODO: доп обработка
+    private static final Logger LOG = LoggerFactory.getLogger(ArtistService.class);
 
     private final ArtistRepository artistRepository;
 

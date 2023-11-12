@@ -16,24 +16,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/country")
 public class GeoController {
     private static final Logger LOG = LoggerFactory.getLogger(GeoController.class);
     private final GeoClient geoClient;
-    private final DataAggergator dataAggregator;
 
     @Autowired
-    public GeoController(GeoClient geoClient, DataAggergator dataAggregator) {
+    public GeoController(GeoClient geoClient) {
         this.geoClient = geoClient;
-        this.dataAggregator = dataAggregator;
     }
 
-    @GetMapping("/api/country")
+    @GetMapping()
     public Page<CountryJson> getAll(@PageableDefault Pageable pageable) {
         return geoClient.getAll(pageable);
-    }
-
-    @GetMapping("/api/geo/{id}")
-    public GeoJson findGeoById(@PathVariable("id") String id) {
-        return dataAggregator.getGeo(id);
     }
 }

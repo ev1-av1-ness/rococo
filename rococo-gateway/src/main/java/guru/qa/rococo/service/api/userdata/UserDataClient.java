@@ -19,6 +19,7 @@ public class UserDataClient {
     private final WebClient webClient;
     private final String rococoUserdataBaseUri;
 
+    @Autowired
     public UserDataClient(WebClient webClient,
                               @Value("${rococo-userdata.base-uri}") String rococoUserdataBaseUri) {
         this.webClient = webClient;

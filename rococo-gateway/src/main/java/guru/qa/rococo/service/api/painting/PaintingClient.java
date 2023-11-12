@@ -2,6 +2,7 @@ package guru.qa.rococo.service.api.painting;
 
 import guru.qa.rococo.model.PaintingJson;
 import jakarta.annotation.Nonnull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,6 +23,7 @@ public class PaintingClient {
     private final WebClient webClient;
     private final String rococoPaintingBaseUri;
 
+    @Autowired
     public PaintingClient(WebClient webClient,
                         @Value("${rococo-painting.base-uri}") String rococoPaintingBaseUri) {
         this.webClient = webClient;

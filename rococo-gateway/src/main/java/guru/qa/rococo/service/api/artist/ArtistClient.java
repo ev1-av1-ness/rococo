@@ -1,8 +1,12 @@
 package guru.qa.rococo.service.api.artist;
 
 import guru.qa.rococo.model.ArtistJson;
+import guru.qa.rococo.model.CountryJson;
+import guru.qa.rococo.service.api.CustomPageImpl;
 import jakarta.annotation.Nonnull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +26,7 @@ public class ArtistClient {
     private final WebClient webClient;
     private final String rococoArtistBaseUri;
 
+    @Autowired
     public ArtistClient(WebClient webClient,
                           @Value("${rococo-artist.base-uri}") String rococoArtistBaseUri) {
         this.webClient = webClient;
@@ -52,7 +57,7 @@ public class ArtistClient {
     Page<ArtistJson> getAll(@Nullable String name, @Nonnull Pageable pageable) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         if (name != null) {
-            params.add("title", name);
+            params.add("name", name);
         }
         params.add("size", String.valueOf(pageable.getPageSize()));
         params.add("page", String.valueOf(pageable.getPageNumber()));
@@ -61,10 +66,8 @@ public class ArtistClient {
         return webClient.get()
                 .uri(uri)
                 .retrieve()
-                .bodyToFlux(ArtistJson.class)
-                .collectList()
-                .map(artistList -> createPage(artistList, pageable)).block();
-
+                .bodyToMono(new ParameterizedTypeReference<CustomPageImpl<ArtistJson>>() {})
+                .block();
     }
 
     public @Nonnull
@@ -76,11 +79,5 @@ public class ArtistClient {
                 .retrieve()
                 .bodyToMono(ArtistJson.class)
                 .block();
-    }
-
-    private Page<ArtistJson> createPage(List<ArtistJson> artistList, Pageable pageable) {
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), artistList.size());
-        return new PageImpl<>(artistList.subList(start, end), pageable, artistList.size());
     }
 }

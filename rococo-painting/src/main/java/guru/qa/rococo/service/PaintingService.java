@@ -33,10 +33,10 @@ public class PaintingService {
     }
 
     @Transactional(readOnly = true)
-    public @Nonnull Page<PaintingJson> getAll(@Nullable String name, @Nonnull Pageable pageable) {
-        Page<PaintingEntity> paintingEntities = (name == null)
+    public @Nonnull Page<PaintingJson> getAll(@Nullable String title, @Nonnull Pageable pageable) {
+        Page<PaintingEntity> paintingEntities = (title == null)
                 ? paintingRepository.findAll(pageable)
-                : paintingRepository.findAllByTitleContainsIgnoreCase(name, pageable);
+                : paintingRepository.findAllByTitleContainsIgnoreCase(title, pageable);
         return paintingEntities.map(PaintingJson::fromEntity);
     }
 
@@ -55,7 +55,7 @@ public class PaintingService {
         return paintingEntities.map(PaintingJson::fromEntity);
     }
 
-    public @Nonnull PaintingJson createPainting(@Nonnull PaintingJson painting) {
+    public @Nonnull PaintingJson addPainting(@Nonnull PaintingJson painting) {
         PaintingEntity paintingEntity = new PaintingEntity();
         paintingEntity.setTitle(painting.getTitle());
         paintingEntity.setDescription(painting.getDescription());
@@ -67,7 +67,7 @@ public class PaintingService {
         return PaintingJson.fromEntity(saved);
     }
 
-    public @Nonnull PaintingJson changePainting(@Nonnull PaintingJson painting) {
+    public @Nonnull PaintingJson updatePainting(@Nonnull PaintingJson painting) {
         Optional<PaintingEntity> paintingById = paintingRepository.findById(painting.getId());
         if (paintingById.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Painting not found with id: " + painting.getId());

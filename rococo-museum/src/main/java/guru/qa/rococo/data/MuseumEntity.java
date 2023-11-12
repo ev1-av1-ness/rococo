@@ -11,7 +11,7 @@ import java.util.UUID;
 public class MuseumEntity {
     @Id
     @GeneratedValue(generator = "UUID", strategy = GenerationType.AUTO)
-    @Column(name = "museum_id", columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID(), TRUE))")
+    @Column(name = "id", columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID(), TRUE))")
     private UUID id;
 
     @Column(name = "title", nullable = false, unique = true)
