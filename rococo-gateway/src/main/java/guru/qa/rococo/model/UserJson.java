@@ -19,7 +19,7 @@ public record UserJson(
         @Size(max = 50, message = "Lastname can`t be longer than 50 characters")
         String lastname,
         @JsonProperty("avatar")
-        @Size(max = RococoGatewayServiceConfig.THREE_MB)
+        @Size(max = RococoGatewayServiceConfig.TEN_MB)
         String avatar) {
 
     public @Nonnull UserJson addUsername(@Nonnull String username) {

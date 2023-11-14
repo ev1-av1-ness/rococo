@@ -41,7 +41,8 @@ public class PaintingController {
     @GetMapping("/author/{artistId}")
     public Page<PaintingJson> findPaintingByAuthorId(@PathVariable("artistId") String artistId,
                                                      @PageableDefault Pageable pageable) {
-        return paintingClient.findPaintingByAuthorId(artistId, pageable);
+        Page<PaintingJson> paintingJsonPage = paintingClient.findPaintingByAuthorId(artistId, pageable);
+        return dataAggregator.enrichPaintings(paintingJsonPage);
     }
 
     @PatchMapping()

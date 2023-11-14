@@ -36,6 +36,7 @@ public class DataAggergator {
         ArtistJson artistJson = artistClient.findArtistById(String.valueOf(paintingJson.getArtistId()));
 
         paintingJson.setArtist(artistJson);
+        museumJson.setGeoId(null);
         paintingJson.setMuseum(museumJson);
         paintingJson.setArtistId(null);
         paintingJson.setMuseumId(null);
