@@ -19,7 +19,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ArtistClient {

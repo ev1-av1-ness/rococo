@@ -47,39 +47,39 @@ logging:
 #    org.springframework.boot.autoconfigure: DEBUG
 
 oauth2:
-  client-id: client
+  client-id: 'client'
   client-secret: '{noop}secret'
 
 ---
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: 'local'
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: 'localhost:9092'
   datasource:
     url: jdbc:mysql://localhost:3306/rococo-auth?serverTimezone=UTC&createDatabaseIfNotExist=true
   jpa:
     hibernate:
       ddl-auto: validate
 rococo-client:
-  base-uri: http://127.0.0.1:3000
+  base-uri: 'http://127.0.0.1:3000'
 rococo-auth:
-  base-uri: http://127.0.0.1:9000
+  base-uri: 'http://127.0.0.1:9000'
 ---
 spring:
   config:
     activate:
-      on-profile: docker
+      on-profile: 'docker'
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: 'kafka:9092'
   datasource:
     url: jdbc:mysql://rococo-db:3306/rococo-auth?serverTimezone=UTC&createDatabaseIfNotExist=true
   jpa:
     hibernate:
       ddl-auto: validate
 rococo-client:
-  base-uri: http://client.rococo.dc
+  base-uri: 'http://client.rococo.dc'
 rococo-auth:
-  base-uri: http://auth.rococo.dc:9000
+  base-uri: 'http://auth.rococo.dc:9000'
 ---

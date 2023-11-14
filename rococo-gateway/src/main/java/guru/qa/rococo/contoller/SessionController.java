@@ -9,12 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Date;
-
-import static java.util.Objects.requireNonNull;
+import java.util.Date;
 
 @RestController
-@RequestMapping("api/session")
+@RequestMapping("/api/session")
 public class SessionController {
     private static final Logger LOG = LoggerFactory.getLogger(SessionController.class);
 
@@ -23,8 +21,8 @@ public class SessionController {
         if (principal != null) {
             return new SessionJson(
                     principal.getClaim("sub"),
-                    Date.from(requireNonNull(principal.getIssuedAt())),
-                    Date.from(requireNonNull(principal.getExpiresAt()))
+                    Date.from(principal.getIssuedAt()),
+                    Date.from(principal.getExpiresAt())
             );
         } else {
             return SessionJson.empty();

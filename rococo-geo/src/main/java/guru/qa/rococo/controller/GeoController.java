@@ -30,4 +30,9 @@ public class GeoController {
     public GeoJson findGeoById(@PathVariable("id") String id) {
         return geoService.findGeoById(id);
     }
+
+    @GetMapping("/api/geo")
+    public Page<GeoJson> getAllGeo(@PageableDefault Pageable pageable) {
+        return geoService.getAllGeo(pageable);
+    }
 }

@@ -3,6 +3,7 @@ package guru.qa.rococo.config;
 import guru.qa.rococo.model.UserJson;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,12 +13,14 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 @Configuration
-public class RococoUserdataConsumerConfiguration {
+public class RococoUserdataServiceConfig {
 
     private final KafkaProperties kafkaProperties;
+    private final String rococoUserdataBaseUri;
 
     @Autowired
-    public RococoUserdataConsumerConfiguration(KafkaProperties kafkaProperties) {
+    public RococoUserdataServiceConfig(@Value("${rococo-userdata.base-uri}") String rococoUserdataBaseUri, KafkaProperties kafkaProperties) {
+        this.rococoUserdataBaseUri = rococoUserdataBaseUri;
         this.kafkaProperties = kafkaProperties;
     }
 

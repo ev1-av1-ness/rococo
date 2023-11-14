@@ -26,9 +26,9 @@ public class MuseumController {
     }
 
     @GetMapping()
-    public Page<MuseumJson> getAll(@RequestParam(required = false) String name,
+    public Page<MuseumJson> getAll(@RequestParam(required = false) String title,
                                    @PageableDefault Pageable pageable) {
-        Page<MuseumJson> museumJsonPage = museumClient.getAll(name, pageable);
+        Page<MuseumJson> museumJsonPage = museumClient.getAll(title, pageable);
         return dataAggregator.enrichMuseums(museumJsonPage);
     }
 

@@ -1,9 +1,12 @@
 package guru.qa.rococo.service.api.painting;
 
+import guru.qa.rococo.model.ArtistJson;
 import guru.qa.rococo.model.PaintingJson;
+import guru.qa.rococo.service.api.CustomPageImpl;
 import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -51,10 +54,10 @@ public class PaintingClient {
     }
 
     public @Nonnull
-    Page<PaintingJson> getAll(@Nullable String name, @Nonnull Pageable pageable) {
+    Page<PaintingJson> getAll(@Nullable String title, @Nonnull Pageable pageable) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        if (name != null) {
-            params.add("title", name);
+        if (title != null) {
+            params.add("title", title);
         }
         params.add("size", String.valueOf(pageable.getPageSize()));
         params.add("page", String.valueOf(pageable.getPageNumber()));
@@ -63,9 +66,8 @@ public class PaintingClient {
         return webClient.get()
                 .uri(uri)
                 .retrieve()
-                .bodyToFlux(PaintingJson.class)
-                .collectList()
-                .map(paintingList -> createPage(paintingList, pageable)).block();
+                .bodyToMono(new ParameterizedTypeReference<CustomPageImpl<PaintingJson>>() {})
+                .block();
 
     }
 
@@ -80,13 +82,6 @@ public class PaintingClient {
                 .block();
     }
 
-    private Page<PaintingJson> createPage(List<PaintingJson> paintingList, Pageable pageable) {
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), paintingList.size());
-        return new PageImpl<>(paintingList.subList(start, end), pageable, paintingList.size());
-    }
-
-
     public @Nonnull
     Page<PaintingJson> findPaintingByAuthorId(@Nonnull String artistId, @Nonnull Pageable pageable) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -99,8 +94,7 @@ public class PaintingClient {
         return webClient.get()
                 .uri(uri)
                 .retrieve()
-                .bodyToFlux(PaintingJson.class)
-                .collectList()
-                .map(paintingList -> createPage(paintingList, pageable)).block();
+                .bodyToMono(new ParameterizedTypeReference<CustomPageImpl<PaintingJson>>() {})
+                .block();
     }
 }

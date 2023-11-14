@@ -33,22 +33,18 @@ public class RegisterController {
     private static final String REG_MODEL_ERROR_BEAN_NAME = "org.springframework.validation.BindingResult.registrationModel";
 
     private final UserService userService;
-
-    private final KafkaTemplate<String, UserJson> kafkaTemplate;
-
     private final String rococoFrontUri;
 
     @Autowired
     public RegisterController(UserService userService,
-                              KafkaTemplate<String, UserJson> kafkaTemplate, @Value("${rococo-client.base-uri}") String rococoFrontUri) {
+                              @Value("${rococo-client.base-uri}") String rococoFrontUri) {
         this.userService = userService;
-        this.kafkaTemplate = kafkaTemplate;
         this.rococoFrontUri = rococoFrontUri;
     }
 
     @GetMapping("/register")
-    public String getRegisterPage(Model model) {
-        model.addAttribute(MODEL_REG_FORM_ATTR, new RegistrationModel());
+    public String getRegisterPage(@Nonnull Model model) {
+        model.addAttribute(MODEL_REG_FORM_ATTR, new RegistrationModel(null, null, null));
         model.addAttribute(MODEL_FRONT_URI_ATTR, rococoFrontUri + "/redirect");
         return REGISTRATION_VIEW_NAME;
     }
@@ -62,23 +58,18 @@ public class RegisterController {
             final String registeredUserName;
             try {
                 registeredUserName = userService.registerUser(
-                        registrationModel.getUsername(),
-                        registrationModel.getPassword()
+                        registrationModel.username(),
+                        registrationModel.password()
                 );
                 response.setStatus(HttpServletResponse.SC_CREATED);
                 model.addAttribute(MODEL_USERNAME_ATTR, registeredUserName);
-
-                UserJson user = new UserJson();
-                user.setUsername(registrationModel.getUsername());
-                kafkaTemplate.send("users", user);
-                LOG.info("### Kafka topic [users] sent message: " + user.getUsername());
             } catch (DataIntegrityViolationException e) {
                 LOG.error("### Error while registration user: " + e.getMessage());
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 addErrorToRegistrationModel(
                         registrationModel,
                         model,
-                        "username", "Username `" + registrationModel.getUsername() + "` already exists"
+                        "username", "Username `" + registrationModel.username() + "` already exists"
                 );
             }
         } else {

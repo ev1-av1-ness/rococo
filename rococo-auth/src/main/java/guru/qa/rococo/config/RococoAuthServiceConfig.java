@@ -40,15 +40,22 @@ public class RococoAuthServiceConfig {
     private final KeyManager keyManager;
     private final String rococoFrontUri;
     private final String rococoAuthUri;
+    private final String clientId;
+    private final String clientSecret;
     private final CorsCustomizer corsCustomizer;
 
     @Autowired
     public RococoAuthServiceConfig(KeyManager keyManager,
-                                   @Value("${rococo-client.base-uri}") String rococoFrontUri,
-                                   @Value("${rococo-auth.base-uri}") String rococoAuthUri, CorsCustomizer corsCustomizer) {
+                                    @Value("${rococo-client.base-uri}") String rococoFrontUri,
+                                    @Value("${rococo-auth.base-uri}") String rococoAuthUri,
+                                    @Value("${oauth2.client-id}") String clientId,
+                                    @Value("${oauth2.client-secret}") String clientSecret,
+                                    CorsCustomizer corsCustomizer) {
         this.keyManager = keyManager;
         this.rococoFrontUri = rococoFrontUri;
         this.rococoAuthUri = rococoAuthUri;
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
         this.corsCustomizer = corsCustomizer;
     }
 
@@ -59,20 +66,18 @@ public class RococoAuthServiceConfig {
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults());    // Enable OpenID Connect 1.0
 
-        http.exceptionHandling(exceptions ->
-                        exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
-                )
+        http.exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
                 .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
 
         corsCustomizer.corsCustomizer(http);
-        return http.formLogin(Customizer.withDefaults()).build();
+        return http.build();
     }
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("client")
-                .clientSecret("{noop}secret")
+                .clientId(clientId)
+                .clientSecret(clientSecret)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)

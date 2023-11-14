@@ -1,9 +1,12 @@
 package guru.qa.rococo.service.api.museum;
 
+import guru.qa.rococo.model.ArtistJson;
 import guru.qa.rococo.model.MuseumJson;
+import guru.qa.rococo.service.api.CustomPageImpl;
 import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -51,10 +54,10 @@ public class MuseumClient {
     }
 
     public @Nonnull
-    Page<MuseumJson> getAll(@Nullable String name, @Nonnull Pageable pageable) {
+    Page<MuseumJson> getAll(@Nullable String title, @Nonnull Pageable pageable) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        if (name != null) {
-            params.add("title", name);
+        if (title != null) {
+            params.add("title", title);
         }
         params.add("size", String.valueOf(pageable.getPageSize()));
         params.add("page", String.valueOf(pageable.getPageNumber()));
@@ -63,10 +66,8 @@ public class MuseumClient {
         return webClient.get()
                 .uri(uri)
                 .retrieve()
-                .bodyToFlux(MuseumJson.class)
-                .collectList()
-                .map(museumList -> createPage(museumList, pageable)).block();
-
+                .bodyToMono(new ParameterizedTypeReference<CustomPageImpl<MuseumJson>>() {})
+                .block();
     }
 
     public @Nonnull
@@ -78,11 +79,5 @@ public class MuseumClient {
                 .retrieve()
                 .bodyToMono(MuseumJson.class)
                 .block();
-    }
-
-    private Page<MuseumJson> createPage(List<MuseumJson> museumList, Pageable pageable) {
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), museumList.size());
-        return new PageImpl<>(museumList.subList(start, end), pageable, museumList.size());
     }
 }

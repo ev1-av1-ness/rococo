@@ -2,6 +2,7 @@ package guru.qa.rococo.contoller;
 
 import guru.qa.rococo.model.UserJson;
 import guru.qa.rococo.service.api.userdata.UserDataClient;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,9 @@ public class UserController {
 
     @PatchMapping()
     public UserJson updateUserInfo(@AuthenticationPrincipal Jwt principal,
-                                   @Validated @RequestBody UserJson user) {
+                                   @Valid @RequestBody UserJson user) {
         String username = principal.getClaim("sub");
-        user.setUsername(username);
-        return userDataClient.updateUserInfo(user);
+        return userDataClient.updateUserInfo(user.addUsername(username));
     }
 
     @GetMapping()

@@ -1,6 +1,7 @@
 package guru.qa.rococo.service;
 
 import guru.qa.rococo.data.CountryEntity;
+import guru.qa.rococo.data.GeoEntity;
 import guru.qa.rococo.data.repository.CountryRepository;
 import guru.qa.rococo.data.repository.GeoRepository;
 import guru.qa.rococo.ex.NotFoundException;
@@ -39,5 +40,11 @@ public class GeoService {
                         .orElseThrow(() -> new NotFoundException("Geo not found with id: " + id)
                         )
         );
+    }
+
+    @Transactional(readOnly = true)
+    public @Nonnull Page<GeoJson> getAllGeo(@Nonnull Pageable pageable) {
+        Page<GeoEntity> geoEntities = geoRepository.findAll(pageable);
+        return geoEntities.map(GeoJson::fromEntity);
     }
 }

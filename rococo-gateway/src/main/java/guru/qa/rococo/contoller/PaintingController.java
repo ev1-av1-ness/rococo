@@ -27,9 +27,9 @@ public class PaintingController {
     }
 
     @GetMapping()
-    public Page<PaintingJson> getAll(@RequestParam(required = false) String name,
+    public Page<PaintingJson> getAll(@RequestParam(required = false) String title,
                                      @PageableDefault Pageable pageable) {
-        Page<PaintingJson> paintingJsonPage = paintingClient.getAll(name, pageable);
+        Page<PaintingJson> paintingJsonPage = paintingClient.getAll(title, pageable);
         return dataAggregator.enrichPaintings(paintingJsonPage);
     }
 

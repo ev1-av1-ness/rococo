@@ -32,14 +32,11 @@ public class DataAggergator {
 
     public PaintingJson getPainting(String id) {
         PaintingJson paintingJson = paintingClient.findPaintingById(id);
-        paintingJson.setMuseum(museumClient.findMuseumById(String.valueOf(paintingJson.getMuseumId())));
-        paintingJson.setArtist(artistClient.findArtistById(String.valueOf(paintingJson.getArtistId())));
+        MuseumJson museumJson = museumClient.findMuseumById(String.valueOf(paintingJson.getMuseumId()));
+        ArtistJson artistJson = artistClient.findArtistById(String.valueOf(paintingJson.getArtistId()));
 
-        ArtistJson artistJson = getArtist(String.valueOf(paintingJson.getArtist()));
-        MuseumJson museumJson = getMuseum(String.valueOf(paintingJson.getMuseum()));
-
-        paintingJson.setMuseum(museumJson);
         paintingJson.setArtist(artistJson);
+        paintingJson.setMuseum(museumJson);
         paintingJson.setArtistId(null);
         paintingJson.setMuseumId(null);
         paintingJson.setContent(paintingJson.getContent());
@@ -48,16 +45,6 @@ public class DataAggergator {
         paintingJson.setId(paintingJson.getId());
 
         return paintingJson;
-    }
-
-    public ArtistJson getArtist(String id) {
-        ArtistJson artistJson = artistClient.findArtistById(id);
-
-        artistJson.setId(artistJson.getId());
-        artistJson.setPhoto(artistJson.getPhoto());
-        artistJson.setBiography(artistJson.getBiography());
-        artistJson.setName(artistJson.getName());
-        return artistJson;
     }
 
     public MuseumJson getMuseum(String id) {
@@ -72,17 +59,9 @@ public class DataAggergator {
         museumJson.setDescription(museumJson.getDescription());
         museumJson.setPhoto(museumJson.getPhoto());
         museumJson.setGeo(geoJson);
+        museumJson.setGeoId(null);
 
         return museumJson;
-    }
-
-    public GeoJson getGeo(String id) {
-        GeoJson geoJson = geoClient.findGeoById(id);
-
-        geoJson.setCity(geoJson.getCity());
-        geoJson.setCountry(geoJson.getCountry());
-
-        return geoJson;
     }
 
     public Page<PaintingJson> enrichPaintings(Page<PaintingJson> paintingJsonPage) {

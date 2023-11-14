@@ -43,20 +43,34 @@ logging:
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: 'local'
+  kafka:
+    bootstrap-servers: 'localhost:9092'
+    consumer:
+      group-id: 'userdata'
+      auto-offset-reset: earliest
   datasource:
     url: jdbc:mysql://localhost:3306/rococo-userdata?serverTimezone=UTC&createDatabaseIfNotExist=true
   jpa:
     hibernate:
       ddl-auto: validate
+rococo-userdata:
+  base-uri: 'http://127.0.0.1:8092'
 ---
 spring:
   config:
     activate:
-      on-profile: docker
+      on-profile: 'docker'
+  kafka:
+    bootstrap-servers: 'kafka:9092'
+    consumer:
+      group-id: 'userdata'
+      auto-offset-reset: earliest
   datasource:
     url: jdbc:mysql://rococo-db:3306/rococo-userdata?serverTimezone=UTC&createDatabaseIfNotExist=true
   jpa:
     hibernate:
       ddl-auto: validate
+rococo-userdata:
+  base-uri: 'http://userdata.rococo.dc:8092'
 ---
