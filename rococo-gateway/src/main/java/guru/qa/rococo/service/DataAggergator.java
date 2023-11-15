@@ -52,6 +52,7 @@ public class DataAggergator {
         MuseumJson museumJson = museumClient.findMuseumById(id);
         GeoJson geoJson = geoClient.findGeoById(String.valueOf(museumJson.getGeoId()));
 
+        geoJson.setId(null);
         geoJson.setCity(geoJson.getCity());
         geoJson.setCountry(geoJson.getCountry());
 

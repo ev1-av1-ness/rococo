@@ -47,4 +47,13 @@ public class GeoService {
         Page<GeoEntity> geoEntities = geoRepository.findAll(pageable);
         return geoEntities.map(GeoJson::fromEntity);
     }
+
+    @Transactional(readOnly = true)
+    public @Nonnull GeoJson findGeoByCity(@Nonnull String city) {
+        return GeoJson.fromEntity(
+                geoRepository.findByCity(city)
+                        .orElseThrow(() -> new NotFoundException("Geo not found with city: " + city)
+                        )
+        );
+    }
 }

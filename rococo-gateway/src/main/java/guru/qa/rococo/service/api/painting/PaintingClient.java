@@ -21,6 +21,8 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 @Component
 public class PaintingClient {
     private final WebClient webClient;
@@ -61,7 +63,10 @@ public class PaintingClient {
         }
         params.add("size", String.valueOf(pageable.getPageSize()));
         params.add("page", String.valueOf(pageable.getPageNumber()));
-        URI uri = UriComponentsBuilder.fromHttpUrl(rococoPaintingBaseUri + "/api/painting").queryParams(params).build().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(rococoPaintingBaseUri + "/api/painting").queryParams(params)
+                .encode(UTF_8)
+                .build()
+                .toUri();
 
         return webClient.get()
                 .uri(uri)

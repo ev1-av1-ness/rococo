@@ -2,6 +2,7 @@ package guru.qa.rococo.contoller;
 
 import guru.qa.rococo.model.PaintingJson;
 import guru.qa.rococo.service.DataAggergator;
+import guru.qa.rococo.service.api.artist.ArtistClient;
 import guru.qa.rococo.service.api.painting.PaintingClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +20,13 @@ public class PaintingController {
 
     private final PaintingClient paintingClient;
     private final DataAggergator dataAggregator;
+    private final ArtistClient artistClient;
 
     @Autowired
-    public PaintingController(PaintingClient paintingClient, DataAggergator dataAggregator) {
+    public PaintingController(PaintingClient paintingClient, DataAggergator dataAggregator, ArtistClient artistClient) {
         this.paintingClient = paintingClient;
         this.dataAggregator = dataAggregator;
+        this.artistClient = artistClient;
     }
 
     @GetMapping()
@@ -47,12 +50,16 @@ public class PaintingController {
 
     @PatchMapping()
     public PaintingJson updatePainting(@RequestBody PaintingJson painting) {
+//        painting.setMuseum(dataAggregator.getMuseum(String.valueOf(painting.getId())));
+//        painting.setArtist(artistClient.findArtistById(String.valueOf(painting.getId())));
         return paintingClient.updatePainting(painting);
     }
 
     @PostMapping()
     public PaintingJson addPainting(
             @RequestBody PaintingJson painting) {
+//        painting.setMuseum(dataAggregator.getMuseum(String.valueOf(painting.getMuseumId())));
+//        painting.setArtist(artistClient.findArtistById(String.valueOf(painting.getArtistId())));
         return paintingClient.addPainting(painting);
     }
 }

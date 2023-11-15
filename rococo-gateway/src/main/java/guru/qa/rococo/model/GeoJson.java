@@ -1,16 +1,28 @@
 package guru.qa.rococo.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
+import java.util.UUID;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GeoJson {
 
+    private UUID id;
     @JsonProperty("city")
     private String city;
     @JsonProperty("country")
     private CountryJson countryJson;
 
     public GeoJson() {
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     @JsonProperty("city")

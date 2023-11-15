@@ -1,8 +1,8 @@
 package guru.qa.rococo.contoller;
 
 import guru.qa.rococo.model.MuseumJson;
-import guru.qa.rococo.model.PaintingJson;
 import guru.qa.rococo.service.DataAggergator;
+import guru.qa.rococo.service.api.geo.GeoClient;
 import guru.qa.rococo.service.api.museum.MuseumClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +18,13 @@ public class MuseumController {
     private static final Logger LOG = LoggerFactory.getLogger(MuseumController.class);
     private final MuseumClient museumClient;
     private final DataAggergator dataAggregator;
+    private final GeoClient geoClient;
 
     @Autowired
-    public MuseumController(MuseumClient museumClient, DataAggergator dataAggregator) {
+    public MuseumController(MuseumClient museumClient, DataAggergator dataAggregator, GeoClient geoClient) {
         this.museumClient = museumClient;
         this.dataAggregator = dataAggregator;
+        this.geoClient = geoClient;
     }
 
     @GetMapping()
@@ -39,12 +41,17 @@ public class MuseumController {
 
     @PatchMapping()
     public MuseumJson updateMuseum(@RequestBody MuseumJson museum) {
+        museum.setGeoId(geoClient.findGeoByCity(museum.getGeo().getCity()).getId());
+        //TODO: добавить функцию записи на уровне сервиса нового города для страны,
+        //то есть создание нового гео
         return museumClient.updateMuseum(museum);
     }
 
     @PostMapping()
-    public MuseumJson addMuseum(
-            @RequestBody MuseumJson museum) {
+    public MuseumJson addMuseum(@RequestBody MuseumJson museum) {
+        museum.setGeoId(geoClient.findGeoByCity(museum.getGeo().getCity()).getId());
+        //TODO: добавить функцию записи на уровне сервиса нового города для страны,
+        //то есть создание нового гео
         return museumClient.addMuseum(museum);
     }
 }

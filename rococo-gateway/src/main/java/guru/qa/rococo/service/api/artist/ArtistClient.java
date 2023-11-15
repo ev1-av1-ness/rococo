@@ -1,14 +1,12 @@
 package guru.qa.rococo.service.api.artist;
 
 import guru.qa.rococo.model.ArtistJson;
-import guru.qa.rococo.model.CountryJson;
 import guru.qa.rococo.service.api.CustomPageImpl;
 import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
@@ -19,9 +17,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 public class ArtistClient {
@@ -63,7 +60,10 @@ public class ArtistClient {
         }
         params.add("size", String.valueOf(pageable.getPageSize()));
         params.add("page", String.valueOf(pageable.getPageNumber()));
-        URI uri = UriComponentsBuilder.fromHttpUrl(rococoArtistBaseUri + "/api/artist").queryParams(params).build().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(rococoArtistBaseUri + "/api/artist").queryParams(params)
+                .encode(UTF_8)
+                .build()
+                .toUri();
 
         return webClient.get()
                 .uri(uri)

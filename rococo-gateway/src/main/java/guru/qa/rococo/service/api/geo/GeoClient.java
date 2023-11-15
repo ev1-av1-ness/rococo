@@ -17,7 +17,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 public class GeoClient {
@@ -48,6 +51,19 @@ public class GeoClient {
     public @Nonnull
     GeoJson findGeoById(@Nonnull String id) {
         URI uri = UriComponentsBuilder.fromHttpUrl(rococoGeoBaseUri + "/api/geo").path("/{id}").build(id);
+
+        return webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(GeoJson.class)
+                .block();
+    }
+
+    public @Nonnull
+    GeoJson findGeoByCity(@Nonnull String city) {
+        URI uri = UriComponentsBuilder.fromHttpUrl(rococoGeoBaseUri + "/api/geo/city").path("/{city}")
+                .encode(UTF_8)
+                .build(city);
 
         return webClient.get()
                 .uri(uri)

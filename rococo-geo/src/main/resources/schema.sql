@@ -212,5 +212,6 @@ create table if not exists geo
 insert into geo (city, country_id) VALUES ('Токио', (SELECT id FROM country where name = 'Япония'));
 insert into geo (city, country_id) VALUES ('Москва', (SELECT id FROM country where name = 'Россия'));
 insert into geo (city, country_id) VALUES ('Париж', (SELECT id FROM country where name = 'Франция'));
+insert into geo (city, country_id) VALUES ('Сидней', (SELECT id FROM country where name = 'Австралия'));
 
 
