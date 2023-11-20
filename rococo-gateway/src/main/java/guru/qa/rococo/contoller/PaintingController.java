@@ -50,16 +50,16 @@ public class PaintingController {
 
     @PatchMapping()
     public PaintingJson updatePainting(@RequestBody PaintingJson painting) {
-//        painting.setMuseum(dataAggregator.getMuseum(String.valueOf(painting.getId())));
-//        painting.setArtist(artistClient.findArtistById(String.valueOf(painting.getId())));
+        painting.setArtistId(painting.getArtist().getId());
+        painting.setMuseumId(painting.getMuseum().getId());
         return paintingClient.updatePainting(painting);
     }
 
     @PostMapping()
     public PaintingJson addPainting(
             @RequestBody PaintingJson painting) {
-//        painting.setMuseum(dataAggregator.getMuseum(String.valueOf(painting.getMuseumId())));
-//        painting.setArtist(artistClient.findArtistById(String.valueOf(painting.getArtistId())));
+        painting.setArtistId(painting.getArtist().getId());
+        painting.setMuseumId(painting.getMuseum().getId());
         return paintingClient.addPainting(painting);
     }
 }
