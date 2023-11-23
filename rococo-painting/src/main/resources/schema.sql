@@ -1,5 +1,3 @@
-drop table if exists painting cascade;
-
 create table if not exists painting
 (
     id                      binary(16)  unique not null default (UUID_TO_BIN(UUID(), true)),
