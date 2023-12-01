@@ -1,6 +1,6 @@
 package guru.qa.rococo.service;
 
-import guru.qa.rococo.data.*;
+import guru.qa.rococo.data.PaintingEntity;
 import guru.qa.rococo.data.repository.PaintingRepository;
 import guru.qa.rococo.ex.NotFoundException;
 import guru.qa.rococo.model.PaintingJson;

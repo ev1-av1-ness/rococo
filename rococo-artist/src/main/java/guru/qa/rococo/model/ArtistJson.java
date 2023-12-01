@@ -1,11 +1,11 @@
 package guru.qa.rococo.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import guru.qa.rococo.data.ArtistEntity;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.UUID;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import guru.qa.rococo.data.ArtistEntity;
 
 public class ArtistJson {
 

@@ -1,7 +1,6 @@
 package guru.qa.rococo.contoller;
 
 import guru.qa.rococo.model.ArtistJson;
-import guru.qa.rococo.service.DataAggergator;
 import guru.qa.rococo.service.api.artist.ArtistClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

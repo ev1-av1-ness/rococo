@@ -42,7 +42,6 @@ public class MuseumController {
     @PatchMapping()
     public MuseumJson updateMuseum(@RequestBody MuseumJson museum) {
         museum.setGeoId(geoClient.findGeoByCity(museum.getGeo().getCity()).getId());
-        //TODO: добавить функцию записи на уровне сервиса нового города для страны,
         //то есть создание нового гео
         return museumClient.updateMuseum(museum);
     }
@@ -50,7 +49,6 @@ public class MuseumController {
     @PostMapping()
     public MuseumJson addMuseum(@RequestBody MuseumJson museum) {
         museum.setGeoId(geoClient.findGeoByCity(museum.getGeo().getCity()).getId());
-        //TODO: добавить функцию записи на уровне сервиса нового города для страны,
         //то есть создание нового гео
         return museumClient.addMuseum(museum);
     }

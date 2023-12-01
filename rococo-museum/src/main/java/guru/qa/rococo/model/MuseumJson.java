@@ -1,13 +1,13 @@
 package guru.qa.rococo.model;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.rococo.data.MuseumEntity;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter

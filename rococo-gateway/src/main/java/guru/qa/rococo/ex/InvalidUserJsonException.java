@@ -1,7 +1,6 @@
 package guru.qa.rococo.ex;
 
 
-//TODO: подумать какие еще могут быть exeptions
 public class InvalidUserJsonException extends RuntimeException {
 
     public InvalidUserJsonException() {

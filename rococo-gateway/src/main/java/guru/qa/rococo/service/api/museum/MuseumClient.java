@@ -1,6 +1,5 @@
 package guru.qa.rococo.service.api.museum;
 
-import guru.qa.rococo.model.ArtistJson;
 import guru.qa.rococo.model.MuseumJson;
 import guru.qa.rococo.service.api.CustomPageImpl;
 import jakarta.annotation.Nonnull;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
@@ -19,7 +17,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
