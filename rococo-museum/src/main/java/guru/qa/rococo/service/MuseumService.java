@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,6 +39,14 @@ public class MuseumService {
                 ? museumRepository.findAll(pageable)
                 : museumRepository.findAllByTitleContainsIgnoreCase(title, pageable);
         return museumEntities.map(MuseumJson::fromEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public @Nonnull List<MuseumJson> getAllByIds(@Nonnull List<String> ids) {
+        return museumRepository.findAllByIds(ids)
+                .stream()
+                .map(MuseumJson::fromEntity)
+                .toList();
     }
 
     @Transactional(readOnly = true)

@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/museum")
 public class MuseumController {
@@ -23,6 +25,11 @@ public class MuseumController {
     public Page<MuseumJson> getAll(@RequestParam(required = false) String title,
                                    @PageableDefault Pageable pageable) {
         return museumService.getAll(title, pageable);
+    }
+
+    @GetMapping("/all")
+    public List<MuseumJson> getAllByIds(@RequestParam("ids") List<String> ids) {
+        return museumService.getAllByIds(ids);
     }
 
     @GetMapping("/{id}")

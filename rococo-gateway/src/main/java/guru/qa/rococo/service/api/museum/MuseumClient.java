@@ -17,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -69,6 +70,24 @@ public class MuseumClient {
                 .uri(uri)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<CustomPageImpl<MuseumJson>>() {})
+                .block();
+    }
+
+    public @Nonnull
+    List<MuseumJson> getAllByIds(@Nonnull List<String> ids) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.put("ids", ids);
+
+        URI uri = UriComponentsBuilder.fromUriString(rococoMuseumBaseUri + "/api/museum/all")
+                .queryParams(params)
+                .build()
+                .toUri();
+
+        return webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToFlux(MuseumJson.class)
+                .collectList()
                 .block();
     }
 
