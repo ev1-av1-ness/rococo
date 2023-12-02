@@ -4,7 +4,7 @@ import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Selenide.$;
 
-public class WelcomePage {
+public class MainPage {
 
     public static final String pageUrl = "/welcome";
 

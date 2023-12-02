@@ -1,4 +1,4 @@
 package guru.qa.rococo.test.web;
 
-public class GetArtist {
+public class GetPaintingTest {
 }
