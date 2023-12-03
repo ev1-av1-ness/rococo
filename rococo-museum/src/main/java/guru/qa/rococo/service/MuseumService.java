@@ -43,7 +43,10 @@ public class MuseumService {
 
     @Transactional(readOnly = true)
     public @Nonnull List<MuseumJson> getAllByIds(@Nonnull List<String> ids) {
-        return museumRepository.findAllByIds(ids)
+        List<UUID> uuidsIds = ids.stream()
+                .map(UUID::fromString)
+                .toList();
+        return museumRepository.findAllByIds(uuidsIds)
                 .stream()
                 .map(MuseumJson::fromEntity)
                 .toList();

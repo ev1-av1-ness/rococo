@@ -17,8 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class PaintingService {
@@ -38,6 +40,17 @@ public class PaintingService {
                 ? paintingRepository.findAll(pageable)
                 : paintingRepository.findAllByTitleContainsIgnoreCase(title, pageable);
         return paintingEntities.map(PaintingJson::fromEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public @Nonnull List<PaintingJson> getAllByIds(@Nonnull List<String> ids) {
+        List<UUID> uuidsIds = ids.stream()
+                .map(UUID::fromString)
+                .toList();
+        return paintingRepository.findAllByIds(uuidsIds)
+                .stream()
+                .map(PaintingJson::fromEntity)
+                .toList();
     }
 
     @Transactional(readOnly = true)

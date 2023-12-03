@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/artist")
 public class ArtistController {
@@ -22,6 +24,11 @@ public class ArtistController {
     public Page<ArtistJson> getAll(@RequestParam(required = false) String name,
                                    @PageableDefault Pageable pageable) {
         return artistService.getAll(name, pageable);
+    }
+
+    @GetMapping("/all")
+    public List<ArtistJson> getAllByIds(@RequestParam("ids") List<String> ids) {
+        return artistService.getAllByIds(ids);
     }
 
     @PatchMapping()

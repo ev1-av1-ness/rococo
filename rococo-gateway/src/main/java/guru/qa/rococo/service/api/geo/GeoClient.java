@@ -2,6 +2,7 @@ package guru.qa.rococo.service.api.geo;
 
 import guru.qa.rococo.model.CountryJson;
 import guru.qa.rococo.model.GeoJson;
+import guru.qa.rococo.model.MuseumJson;
 import guru.qa.rococo.service.api.CustomPageImpl;
 import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -42,6 +44,24 @@ public class GeoClient {
                 .uri(uri)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<CustomPageImpl<CountryJson>>() {})
+                .block();
+    }
+
+    public @Nonnull
+    List<GeoJson> getAllByIds(@Nonnull List<String> ids) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.put("ids", ids);
+
+        URI uri = UriComponentsBuilder.fromUriString(rococoGeoBaseUri + "/api/geo/all")
+                .queryParams(params)
+                .build()
+                .toUri();
+
+        return webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToFlux(GeoJson.class)
+                .collectList()
                 .block();
     }
 

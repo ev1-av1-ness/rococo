@@ -42,14 +42,12 @@ public class MuseumController {
     @PatchMapping()
     public MuseumJson updateMuseum(@RequestBody MuseumJson museum) {
         museum.setGeoId(geoClient.findGeoByCity(museum.getGeo().getCity()).getId());
-        //то есть создание нового гео
         return museumClient.updateMuseum(museum);
     }
 
     @PostMapping()
     public MuseumJson addMuseum(@RequestBody MuseumJson museum) {
         museum.setGeoId(geoClient.findGeoByCity(museum.getGeo().getCity()).getId());
-        //то есть создание нового гео
         return museumClient.addMuseum(museum);
     }
 }

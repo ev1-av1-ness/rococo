@@ -18,5 +18,5 @@ public interface MuseumRepository extends JpaRepository<MuseumEntity, UUID> {
                                                         @Nonnull Pageable pageable);
 
     @Query("SELECT e FROM MuseumEntity e WHERE e.id IN :ids")
-    List<MuseumEntity> findAllByIds(@Param("ids") List<String> ids);
+    List<MuseumEntity> findAllByIds(@Param("ids") List<UUID> ids);
 }

@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class DataAggergator {
@@ -30,11 +32,9 @@ public class DataAggergator {
         this.geoClient = geoClient;
     }
 
-    public PaintingJson getPainting(String id) {
-        PaintingJson paintingJson = paintingClient.findPaintingById(id);
-        MuseumJson museumJson = museumClient.findMuseumById(String.valueOf(paintingJson.getMuseumId()));
-        ArtistJson artistJson = artistClient.findArtistById(String.valueOf(paintingJson.getArtistId()));
-
+    public PaintingJson enrichPainting(ArtistJson artistJson,
+                                       MuseumJson museumJson,
+                                       PaintingJson paintingJson) {
         paintingJson.setArtist(artistJson);
         museumJson.setGeoId(null);
         paintingJson.setMuseum(museumJson);
@@ -48,10 +48,55 @@ public class DataAggergator {
         return paintingJson;
     }
 
-    public MuseumJson getMuseum(String id) {
-        MuseumJson museumJson = museumClient.findMuseumById(id);
-        GeoJson geoJson = geoClient.findGeoById(String.valueOf(museumJson.getGeoId()));
+    public PaintingJson getPainting(String id) {
+        PaintingJson paintingJson = paintingClient.findPaintingById(id);
+        MuseumJson museumJson = museumClient.findMuseumById(String.valueOf(paintingJson.getMuseumId()));
+        ArtistJson artistJson = artistClient.findArtistById(String.valueOf(paintingJson.getArtistId()));
 
+        return enrichPainting(artistJson, museumJson, paintingJson);
+    }
+
+    public List<PaintingJson> getPaintings(List<String> ids) {
+        List<PaintingJson> paintingJsons = paintingClient.getAllByIds(ids);
+
+        List<String> idsMuseum = paintingJsons.stream()
+                .map(PaintingJson::getMuseumId)
+                .map(UUID::toString)
+                .toList();
+
+        List<MuseumJson> museumJsons = museumClient.getAllByIds(idsMuseum);
+
+        List<String> idsArtist = paintingJsons.stream()
+                .map(PaintingJson::getArtistId)
+                .map(UUID::toString)
+                .toList();
+
+        List<ArtistJson> artistJsons = artistClient.getAllByIds(idsArtist);
+
+//        List<PaintingJson> enrichedPaintings = new ArrayList<>();
+//
+//        for (PaintingJson paintingJson : paintingJsons) {
+//            for (ArtistJson artistJson: artistJsons) {
+//                for (MuseumJson museumJson: museumJsons) {
+//                    PaintingJson enrichedPainting = enrichPainting(artistJson,
+//                            museumJson,
+//                            paintingJson);
+//                    enrichedPaintings.add(enrichedPainting);
+//                }
+//            }
+//        }
+//
+//        return enrichedPaintings;
+
+        return paintingJsons.stream()
+                .flatMap(paintingJson -> artistJsons.stream()
+                        .flatMap(artistJson -> museumJsons.stream()
+                                .map(museumJson -> enrichPainting(artistJson, museumJson, paintingJson))))
+                .collect(Collectors.toList());
+    }
+
+    public MuseumJson enrichMuseum(GeoJson geoJson,
+                                       MuseumJson museumJson) {
         geoJson.setId(null);
         geoJson.setCity(geoJson.getCity());
         geoJson.setCountry(geoJson.getCountry());
@@ -66,25 +111,59 @@ public class DataAggergator {
         return museumJson;
     }
 
+    public MuseumJson getMuseum(String id) {
+        MuseumJson museumJson = museumClient.findMuseumById(id);
+        GeoJson geoJson = geoClient.findGeoById(String.valueOf(museumJson.getGeoId()));
+
+        return enrichMuseum(geoJson, museumJson);
+    }
+
+    public List<MuseumJson> getMuseums(List<String> ids) {
+        List<MuseumJson> museumJsons = museumClient.getAllByIds(ids);
+
+        List<String> idsGeo = museumJsons.stream()
+                .map(MuseumJson::getGeoId)
+                .map(UUID::toString)
+                .toList();
+
+        List<GeoJson> geoJsons = geoClient.getAllByIds(idsGeo);
+
+//        List<MuseumJson> enrichedMuseums = new ArrayList<>();
+//
+//        for (MuseumJson museumJson: museumJsons) {
+//            for (GeoJson geoJson: geoJsons) {
+//                    MuseumJson enrichedMuseum = enrichMuseum(geoJson,
+//                            museumJson);
+//                    enrichedMuseums.add(enrichedMuseum);
+//            }
+//        }
+//
+//        return enrichedMuseums;
+        return museumJsons.stream()
+                .flatMap(museumJson -> geoJsons.stream()
+                        .map(geoJson -> enrichMuseum(geoJson, museumJson)))
+                .collect(Collectors.toList());
+    }
+
     public Page<PaintingJson> enrichPaintings(Page<PaintingJson> paintingJsonPage) {
-        List<PaintingJson> enrichedPaintings = new ArrayList<>();
+        List<String> paintingIds = new ArrayList<>();
 
         for (PaintingJson paintingJson : paintingJsonPage) {
-            PaintingJson enrichedPainting = getPainting(String.valueOf(paintingJson.getId()));
-            enrichedPaintings.add(enrichedPainting);
+            paintingIds.add(String.valueOf(paintingJson.getId()));
         }
 
+        List<PaintingJson> enrichedPaintings = new ArrayList<>(getPaintings(paintingIds));
         return new PageImpl<>(enrichedPaintings, paintingJsonPage.getPageable(), paintingJsonPage.getTotalElements());
     }
 
     public Page<MuseumJson> enrichMuseums(Page<MuseumJson> museumJsonPage) {
-        List<MuseumJson> enrichedMuseums = new ArrayList<>();
+        List<String> museumIds = new ArrayList<>();
 
         for (MuseumJson museumJson : museumJsonPage) {
-            MuseumJson enrichedMuseum = getMuseum(String.valueOf(museumJson.getId()));
-            enrichedMuseums.add(enrichedMuseum);
+            museumIds.add(String.valueOf(museumJson.getId()));
         }
 
+        List<MuseumJson> enrichedMuseums = new ArrayList<>(getMuseums(museumIds));
         return new PageImpl<>(enrichedMuseums, museumJsonPage.getPageable(), museumJsonPage.getTotalElements());
     }
 }
