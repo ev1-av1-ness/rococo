@@ -73,26 +73,17 @@ public class DataAggergator {
 
         List<ArtistJson> artistJsons = artistClient.getAllByIds(idsArtist);
 
-//        List<PaintingJson> enrichedPaintings = new ArrayList<>();
-//
-//        for (PaintingJson paintingJson : paintingJsons) {
-//            for (ArtistJson artistJson: artistJsons) {
-//                for (MuseumJson museumJson: museumJsons) {
-//                    PaintingJson enrichedPainting = enrichPainting(artistJson,
-//                            museumJson,
-//                            paintingJson);
-//                    enrichedPaintings.add(enrichedPainting);
-//                }
-//            }
-//        }
-//
-//        return enrichedPaintings;
+        List<PaintingJson> enrichedPaintings = new ArrayList<>();
 
-        return paintingJsons.stream()
-                .flatMap(paintingJson -> artistJsons.stream()
-                        .flatMap(artistJson -> museumJsons.stream()
-                                .map(museumJson -> enrichPainting(artistJson, museumJson, paintingJson))))
-                .collect(Collectors.toList());
+        for (PaintingJson paintingJson : paintingJsons) {
+            PaintingJson enrichedPainting = enrichPainting(
+                    artistJsons.stream().filter(x -> x.getId().equals(paintingJson.getArtistId())).findFirst().get(),
+                    museumJsons.stream().filter(x -> x.getId().equals(paintingJson.getMuseumId())).findFirst().get(),
+                    paintingJson);
+            enrichedPaintings.add(enrichedPainting);
+        }
+
+        return enrichedPaintings;
     }
 
     public MuseumJson enrichMuseum(GeoJson geoJson,
@@ -128,21 +119,16 @@ public class DataAggergator {
 
         List<GeoJson> geoJsons = geoClient.getAllByIds(idsGeo);
 
-//        List<MuseumJson> enrichedMuseums = new ArrayList<>();
-//
-//        for (MuseumJson museumJson: museumJsons) {
-//            for (GeoJson geoJson: geoJsons) {
-//                    MuseumJson enrichedMuseum = enrichMuseum(geoJson,
-//                            museumJson);
-//                    enrichedMuseums.add(enrichedMuseum);
-//            }
-//        }
-//
-//        return enrichedMuseums;
-        return museumJsons.stream()
-                .flatMap(museumJson -> geoJsons.stream()
-                        .map(geoJson -> enrichMuseum(geoJson, museumJson)))
-                .collect(Collectors.toList());
+        List<MuseumJson> enrichedMuseums = new ArrayList<>();
+
+        for (MuseumJson museumJson : museumJsons) {
+            MuseumJson enrichedMuseum = enrichMuseum(
+                    geoJsons.stream().filter(x -> x.getId().equals(museumJson.getGeoId())).findFirst().get(),
+                    museumJson);
+            enrichedMuseums.add(enrichedMuseum);
+        }
+
+        return enrichedMuseums;
     }
 
     public Page<PaintingJson> enrichPaintings(Page<PaintingJson> paintingJsonPage) {

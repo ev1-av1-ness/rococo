@@ -42,12 +42,14 @@ public class MuseumController {
     @PatchMapping()
     public MuseumJson updateMuseum(@RequestBody MuseumJson museum) {
         museum.setGeoId(geoClient.findGeoByCity(museum.getGeo().getCity()).getId());
-        return museumClient.updateMuseum(museum);
+        museumClient.updateMuseum(museum);
+        return dataAggregator.enrichMuseum(geoClient.findGeoById(String.valueOf(museum.getGeoId())), museum);
     }
 
     @PostMapping()
     public MuseumJson addMuseum(@RequestBody MuseumJson museum) {
         museum.setGeoId(geoClient.findGeoByCity(museum.getGeo().getCity()).getId());
-        return museumClient.addMuseum(museum);
+        museumClient.addMuseum(museum);
+        return dataAggregator.enrichMuseum(geoClient.findGeoById(String.valueOf(museum.getGeoId())), museum);
     }
 }
