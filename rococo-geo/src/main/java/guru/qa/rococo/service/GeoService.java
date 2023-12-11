@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -31,6 +32,17 @@ public class GeoService {
     public @Nonnull Page<CountryJson> getAll(@Nonnull Pageable pageable) {
         Page<CountryEntity> countryEntities = countryRepository.findAll(pageable);
         return countryEntities.map(CountryJson::fromEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public @Nonnull List<GeoJson> getAllByIds(@Nonnull List<String> ids) {
+        List<UUID> uuidsIds = ids.stream()
+                .map(UUID::fromString)
+                .toList();
+        return geoRepository.findAllByIds(uuidsIds)
+                .stream()
+                .map(GeoJson::fromEntity)
+                .toList();
     }
 
     @Transactional(readOnly = true)

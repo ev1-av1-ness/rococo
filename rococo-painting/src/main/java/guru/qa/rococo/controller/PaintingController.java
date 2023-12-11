@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/painting")
 public class PaintingController {
@@ -22,6 +24,11 @@ public class PaintingController {
     public Page<PaintingJson> getAll(@RequestParam(required = false) String title,
                                      @PageableDefault Pageable pageable) {
         return paintingService.getAll(title, pageable);
+    }
+
+    @GetMapping("/all")
+    public List<PaintingJson> getAllByIds(@RequestParam("ids") List<String> ids) {
+        return paintingService.getAllByIds(ids);
     }
 
     @PatchMapping

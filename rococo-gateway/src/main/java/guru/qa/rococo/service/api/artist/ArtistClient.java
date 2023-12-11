@@ -1,6 +1,7 @@
 package guru.qa.rococo.service.api.artist;
 
 import guru.qa.rococo.model.ArtistJson;
+import guru.qa.rococo.model.MuseumJson;
 import guru.qa.rococo.service.api.CustomPageImpl;
 import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -69,6 +71,24 @@ public class ArtistClient {
                 .uri(uri)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<CustomPageImpl<ArtistJson>>() {})
+                .block();
+    }
+
+    public @Nonnull
+    List<ArtistJson> getAllByIds(@Nonnull List<String> ids) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.put("ids", ids);
+
+        URI uri = UriComponentsBuilder.fromUriString(rococoArtistBaseUri + "/api/artist/all")
+                .queryParams(params)
+                .build()
+                .toUri();
+
+        return webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToFlux(ArtistJson.class)
+                .collectList()
                 .block();
     }
 

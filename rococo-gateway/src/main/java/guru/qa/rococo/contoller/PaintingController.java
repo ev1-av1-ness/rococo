@@ -3,6 +3,7 @@ package guru.qa.rococo.contoller;
 import guru.qa.rococo.model.PaintingJson;
 import guru.qa.rococo.service.DataAggergator;
 import guru.qa.rococo.service.api.artist.ArtistClient;
+import guru.qa.rococo.service.api.museum.MuseumClient;
 import guru.qa.rococo.service.api.painting.PaintingClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +22,14 @@ public class PaintingController {
     private final PaintingClient paintingClient;
     private final DataAggergator dataAggregator;
     private final ArtistClient artistClient;
+    private final MuseumClient museumClient;
 
     @Autowired
-    public PaintingController(PaintingClient paintingClient, DataAggergator dataAggregator, ArtistClient artistClient) {
+    public PaintingController(PaintingClient paintingClient, DataAggergator dataAggregator, ArtistClient artistClient, MuseumClient museumClient) {
         this.paintingClient = paintingClient;
         this.dataAggregator = dataAggregator;
         this.artistClient = artistClient;
+        this.museumClient = museumClient;
     }
 
     @GetMapping()
@@ -52,7 +55,11 @@ public class PaintingController {
     public PaintingJson updatePainting(@RequestBody PaintingJson painting) {
         painting.setArtistId(painting.getArtist().getId());
         painting.setMuseumId(painting.getMuseum().getId());
-        return paintingClient.updatePainting(painting);
+        paintingClient.updatePainting(painting);
+        return dataAggregator.enrichPainting(
+                artistClient.findArtistById(String.valueOf(painting.getArtistId())),
+                museumClient.findMuseumById(String.valueOf(painting.getMuseumId())),
+                painting);
     }
 
     @PostMapping()
@@ -60,6 +67,10 @@ public class PaintingController {
             @RequestBody PaintingJson painting) {
         painting.setArtistId(painting.getArtist().getId());
         painting.setMuseumId(painting.getMuseum().getId());
-        return paintingClient.addPainting(painting);
+        paintingClient.addPainting(painting);
+        return dataAggregator.enrichPainting(
+                artistClient.findArtistById(String.valueOf(painting.getArtistId())),
+                museumClient.findMuseumById(String.valueOf(painting.getMuseumId())),
+                painting);
     }
 }

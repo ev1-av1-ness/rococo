@@ -9,7 +9,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class GeoController {
@@ -23,6 +26,11 @@ public class GeoController {
     @GetMapping("/api/country")
     public Page<CountryJson> getAll(@PageableDefault Pageable pageable) {
         return geoService.getAll(pageable);
+    }
+
+    @GetMapping("/api/geo/all")
+    public List<GeoJson> getAllByIds(@RequestParam("ids") List<String> ids) {
+        return geoService.getAllByIds(ids);
     }
 
     @GetMapping("/api/geo/{id}")
